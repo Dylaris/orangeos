@@ -8,5 +8,5 @@
 # file pm.img
 
 sudo mount -o loop pmtest/pm.img /mnt/floppy
-sudo cp pmtest/pmtest5c.com /mnt/floppy
+sudo cp pmtest/pmtest7.com /mnt/floppy
 sudo umount /mnt/floppy

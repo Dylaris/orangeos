@@ -1,5 +1,6 @@
 ; Type of descriptor
 DA_32       equ 4000h   ; 32 bit segment
+DA_LIMIT_4K equ 8000h
 
 DA_DPL0     equ 00h     ; DPL = 0
 DA_DPL1     equ 20h     ; DPL = 1
@@ -31,6 +32,13 @@ SA_RPL3     equ 3
 
 SA_TIG      equ 0
 SA_TIL      equ 4
+
+; Paging
+PG_P        equ 1       ; present
+PG_RWR      equ 0       ; read/execute
+PG_RWW      equ 2       ; read/write/execute
+PG_USS      equ 0       ; superisor
+PG_USU      equ 4       ; user
 
 ; Descriptor
 ; Usage: Descriptor Base, Limit, Attr
