@@ -7,6 +7,6 @@
 # sudo losetup -d /dev/loop0
 # file pm.img
 
-sudo mount -o loop pmtest/pm.img /mnt/floppy
-sudo cp pmtest/pmtest7.com /mnt/floppy
+sudo mount -o loop pm.img /mnt/floppy
+sudo cp pmtest7.com /mnt/floppy
 sudo umount /mnt/floppy
