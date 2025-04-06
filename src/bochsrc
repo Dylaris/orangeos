@@ -6,7 +6,7 @@ romimage: file=$HOME/software/bochs/share/bochs/BIOS-bochs-latest
 vgaromimage: file=$HOME/software/bochs/share/bochs/VGABIOS-lgpl-latest.bin
 
 # what disk images will be used
-floppya: 1_44=os.img, status=inserted
+floppya: 1_44=a.img, status=inserted
 
 # choose the boot disk
 boot: a

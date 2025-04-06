@@ -16,7 +16,7 @@ LDFLAGS = -m elf_i386 -s -Ttext $(ENTRYPOINT)
 BOOT 	= boot/boot.bin boot/loader.bin
 KERNEL 	= kernel.bin
 OBJS 	= kernel/kernel.o kernel/start.o lib/kliba.o lib/string.o
-IMG 	= os.img
+IMG 	= a.img
 
 TARGET = $(KERNEL)
 
@@ -48,4 +48,4 @@ clean:
 	make -C boot clean
 	make -C kernel clean
 	make -C lib clean
-	rm -f $(TARGET)
+	rm -f $(KERNEL) $(BOOT)

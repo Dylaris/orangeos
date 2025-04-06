@@ -1,62 +1,50 @@
+[section .data]
+disp_pos   dd 0
 
-; ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-;                              klib.asm
-; ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-;                                                       Forrest Yu, 2005
-; ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+[section .text]
 
+global disp_str
 
-[SECTION .data]
-disp_pos	dd	0
-
-[SECTION .text]
-
-; 导出函数
-global	disp_str
-
-; ========================================================================
-;                  void disp_str(char * info);
-; ========================================================================
+;===== void disp_str(char *str);
 disp_str:
-	push	ebp
-	mov	ebp, esp
+    push ebp
+    mov ebp, esp
 
-    push ebx ;\
-    push esi ; |书上缺了这块，入栈保护，不然第二次调用 disp_str() 会乱码
-    push edi ;/
+    push esi
+    push edi
+    push ebx
 
-	mov	esi, [ebp + 8]	; pszInfo
-	mov	edi, [disp_pos]
-	mov	ah, 0Fh
+    mov esi, [ebp + 8] ; str
+    mov edi, [disp_pos]
+    mov ah, 0Fh
 .1:
-	lodsb
-	test	al, al
-	jz	.2
-	cmp	al, 0Ah	; 是回车吗?
-	jnz	.3
-	push	eax
-	mov	eax, edi
-	mov	bl, 160
-	div	bl
-	and	eax, 0FFh
-	inc	eax
-	mov	bl, 160
-	mul	bl
-	mov	edi, eax
-	pop	eax
-	jmp	.1
+    lodsb
+    test al, al
+    jz .2
+    cmp al, 0Ah ; is newline?
+    jnz .3
+    push eax
+    mov eax, edi
+    mov bl, 160
+    div bl
+    and eax, 0FFh
+    inc eax
+    mov bl, 160
+    mul bl
+    mov edi, eax
+    pop eax
+    jmp .1
 .3:
-	mov	[gs:edi], ax
-	add	edi, 2
-	jmp	.1
+    mov [gs:edi], ax
+    add edi, 2
+    jmp .1
 
 .2:
-	mov	[disp_pos], edi
+    mov [disp_pos], edi
 
-	pop	edi ;\
-    pop esi ; | 恢复
-    pop ebx ;/
-
+    pop ebx
+    pop edi
+    pop esi
     pop ebp
-	ret
+    ret
 

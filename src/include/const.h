@@ -1,13 +1,13 @@
 /*
- * Constant.
+ * Constant
  */
 
-#ifndef _ORANGES_CONST_H
-#define _ORANGES_CONST_H
+#ifndef _ORANGES_CONST_H_
+#define _ORANGES_CONST_H_
 
 #define PUBLIC
 #define PRIVATE static
 
-#define GDT_SIZE 128    /* Number of descriptors in GDT and IDT */
+#define GDT_SIZE 128
 
-#endif /* _ORANGES_CONST_H */
+#endif /* _ORANGES_CONST_H_ */
