@@ -19,5 +19,8 @@ PUBLIC void cstart(void)
     *p_idt_limit = IDT_SIZE * sizeof(GATE) - 1;
     *p_idt_base = (u32) &idt;
 
+    init_pic();
+    init_interrupt();
+
     disp_str("-----\"cstart\" ends-----\n");
 }

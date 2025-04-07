@@ -26,4 +26,6 @@ typedef struct s_gate {
 	u16 offset_high;
 } GATE;
 
+typedef void (*int_handler)(void);
+
 #endif /* _ORANGES_TYPE_H_ */

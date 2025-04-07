@@ -9,13 +9,15 @@
 #include "const.h"
 
 /* kernel/pic.c */
-PUBLIC void init_8259A(void);
+PUBLIC void init_pic(void);
+PUBLIC void spurious_irq(int irq);
 
 /* kernel/start.c */
 PUBLIC void cstart(void);
 
 /* kernel/trap.c */
 PUBLIC void exception_handler(int vec_no, int err_code, int eip, int cs, int eflags);
+PUBLIC void init_interrupt(void);
 
 /* lib/klib.c */
 PUBLIC char *itoa(char *buf, int num);
