@@ -24,7 +24,7 @@ DASMFLAGS 	= -u -o $(ENTRYPOINT) -e $(ENTRYOFFSET)
 # This Program
 ORANGESBOOT 	= boot/boot.bin boot/loader.bin
 ORANGESKERNEL 	= kernel.bin
-OBJS  			= kernel/kernel.o kernel/start.o kernel/i8259.o kernel/global.o kernel/protect.o lib/klib.o lib/kliba.o lib/string.o
+OBJS  			= kernel/kernel.o kernel/start.o kernel/pic.o kernel/global.o kernel/trap.o lib/klib.o lib/kliba.o lib/string.o
 DASMOUTPUT 		= kernel.bin.asm
 
 # All Phony Targets
@@ -48,7 +48,6 @@ realclean :
 disasm :
 	$(DASM) $(DASMFLAGS) $(ORANGESKERNEL) > $(DASMOUTPUT)
 
-# We assume that "a.img" exists in current folder
 buildimg :
 	dd if=boot/boot.bin of=a.img bs=512 count=1 conv=notrunc
 	sudo mount -o loop a.img /mnt/floppy/
@@ -56,6 +55,10 @@ buildimg :
 	sudo cp -fv kernel.bin /mnt/floppy
 	sudo umount /mnt/floppy
 
+$(ORANGESKERNEL) : $(OBJS)
+	$(LD) $(LDFLAGS) -o $(ORANGESKERNEL) $(OBJS)
+
+### BOOT
 boot/boot.bin : boot/boot.asm boot/include/load.inc boot/include/fat12hdr.inc
 	$(ASM) $(ASMBFLAGS) -o $@ $<
 
@@ -63,26 +66,23 @@ boot/loader.bin : boot/loader.asm boot/include/load.inc \
 			boot/include/fat12hdr.inc boot/include/pm.inc
 	$(ASM) $(ASMBFLAGS) -o $@ $<
 
-$(ORANGESKERNEL) : $(OBJS)
-	$(LD) $(LDFLAGS) -o $(ORANGESKERNEL) $(OBJS)
-
+### KERNEL 
 kernel/kernel.o : kernel/kernel.asm
 	$(ASM) $(ASMKFLAGS) -o $@ $<
 
-kernel/start.o: kernel/start.c include/type.h include/const.h include/protect.h \
-		include/proto.h
+kernel/start.o: kernel/start.c include/type.h include/const.h include/proto.h
 	$(CC) $(CFLAGS) -o $@ $<
 
-kernel/i8259.o : kernel/i8259.c include/type.h include/const.h include/protect.h \
-			include/proto.h
+kernel/pic.o : kernel/pic.c include/type.h include/const.h include/proto.h
 	$(CC) $(CFLAGS) -o $@ $<
 
 kernel/global.o : kernel/global.c
 	$(CC) $(CFLAGS) -o $@ $<
 
-kernel/protect.o : kernel/protect.c
+kernel/trap.o : kernel/trap.c
 	$(CC) $(CFLAGS) -o $@ $<
 
+### LIB
 lib/klib.o : lib/klib.c
 	$(CC) $(CFLAGS) -o $@ $<
 

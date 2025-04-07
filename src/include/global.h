@@ -7,7 +7,6 @@
 
 #include "type.h"
 #include "const.h"
-#include "protect.h"
 
 #ifdef GLOBAL_VARIABLE_HERE
 #undef  EXTERN

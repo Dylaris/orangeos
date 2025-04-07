@@ -2,7 +2,6 @@
 #include "const.h"
 #include "proto.h"
 #include "global.h"
-#include "protect.h"
 
 PUBLIC char *itoa(char *buf, int num) 
 {

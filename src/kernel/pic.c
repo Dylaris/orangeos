@@ -1,5 +1,4 @@
 #include "proto.h"
-#include "protect.h"
 
 PUBLIC void init_8259A(void)
 {

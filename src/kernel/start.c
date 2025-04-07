@@ -1,10 +1,9 @@
 #include "type.h"
 #include "const.h"
-#include "protect.h"
 #include "proto.h"
 #include "global.h"
 
-PUBLIC void cstart()
+PUBLIC void cstart(void)
 {
     disp_str("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
          "-----\"cstart\" begins-----\n");
