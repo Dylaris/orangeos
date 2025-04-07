@@ -10,9 +10,9 @@ org  0100h
 	jmp	LABEL_START		; Start
 
 ; 下面是 FAT12 磁盘的头, 之所以包含它是因为下面用到了磁盘的一些信息
-%include	"include/fat12hdr.inc"
-%include	"include/load.inc"
-%include	"include/pm.inc"
+%include	"fat12hdr.inc"
+%include	"load.inc"
+%include	"pm.inc"
 
 
 ; GDT ------------------------------------------------------------------------------------------------------------------------------------------------------------

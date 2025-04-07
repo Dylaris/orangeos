@@ -1,51 +1,93 @@
-# Makefile for Orange'S
+#########################
+# Makefile for Orange'S #
+#########################
 
 # Entry point of Orange'S
-# It must have the same value with 'KernelEntryPointPhyAddr" in load.inc
-ENTRYPOINT = 0x30400
+# It must have the same value with 'KernelEntryPointPhyAddr' in load.inc!
+ENTRYPOINT 	= 0x30400
 
 # Offset of entry point in kernel file
 # It depends on ENTRYPOINT
-ENTRYOFFSET = 0x400
+ENTRYOFFSET =   0x400
 
-# Tool
-LD 		= ld
-LDFLAGS = -m elf_i386 -s -Ttext $(ENTRYPOINT)
+# Programs, flags, etc.
+ASM      	= nasm
+DASM  		= ndisasm
+CC      	= gcc
+LD      	= ld
+ASMBFLAGS 	= -I boot/include/
+ASMKFLAGS 	= -I include/ -f elf
+CFLAGS  	= -m32 -I include/ -c -fno-builtin -fno-stack-protector -std=c11
+LDFLAGS  	= -m elf_i386 -s -Ttext $(ENTRYPOINT)
+DASMFLAGS 	= -u -o $(ENTRYPOINT) -e $(ENTRYOFFSET)
 
-# File
-BOOT 	= boot/boot.bin boot/loader.bin
-KERNEL 	= kernel.bin
-OBJS 	= kernel/kernel.o kernel/start.o lib/kliba.o lib/string.o
-IMG 	= a.img
+# This Program
+ORANGESBOOT 	= boot/boot.bin boot/loader.bin
+ORANGESKERNEL 	= kernel.bin
+OBJS  			= kernel/kernel.o kernel/start.o kernel/i8259.o kernel/global.o kernel/protect.o lib/klib.o lib/kliba.o lib/string.o
+DASMOUTPUT 		= kernel.bin.asm
 
-TARGET = $(KERNEL)
+# All Phony Targets
+.PHONY : everything final image clean realclean disasm all buildimg
 
-# Target
-.PHONY: all boot kernel lib buildimg clean
+# Default starting position
+everything : $(ORANGESBOOT) $(ORANGESKERNEL)
 
-all: boot kernel lib buildimg $(TARGET)
+all : realclean everything
 
-$(TARGET): $(OBJS)
-	$(LD) $(LDFLAGS) -o $@ $^
+final : all clean
 
-buildimg: $(BOOT) $(KERNEL)
-	dd if=boot/boot.bin of=$(IMG) bs=512 count=1 conv=notrunc
-	sudo mount -o loop $(IMG) /mnt/floppy
-	sudo cp -fv boot/loader.bin /mnt/floppy
+image : final buildimg
+
+clean :
+	rm -f $(OBJS)
+
+realclean :
+	rm -f $(OBJS) $(ORANGESBOOT) $(ORANGESKERNEL)
+
+disasm :
+	$(DASM) $(DASMFLAGS) $(ORANGESKERNEL) > $(DASMOUTPUT)
+
+# We assume that "a.img" exists in current folder
+buildimg :
+	dd if=boot/boot.bin of=a.img bs=512 count=1 conv=notrunc
+	sudo mount -o loop a.img /mnt/floppy/
+	sudo cp -fv boot/loader.bin /mnt/floppy/
 	sudo cp -fv kernel.bin /mnt/floppy
 	sudo umount /mnt/floppy
 
-boot:
-	make -C boot
+boot/boot.bin : boot/boot.asm boot/include/load.inc boot/include/fat12hdr.inc
+	$(ASM) $(ASMBFLAGS) -o $@ $<
 
-kernel:
-	make -C kernel
+boot/loader.bin : boot/loader.asm boot/include/load.inc \
+			boot/include/fat12hdr.inc boot/include/pm.inc
+	$(ASM) $(ASMBFLAGS) -o $@ $<
 
-lib:
-	make -C lib
+$(ORANGESKERNEL) : $(OBJS)
+	$(LD) $(LDFLAGS) -o $(ORANGESKERNEL) $(OBJS)
 
-clean:
-	make -C boot clean
-	make -C kernel clean
-	make -C lib clean
-	rm -f $(KERNEL) $(BOOT)
+kernel/kernel.o : kernel/kernel.asm
+	$(ASM) $(ASMKFLAGS) -o $@ $<
+
+kernel/start.o: kernel/start.c include/type.h include/const.h include/protect.h \
+		include/proto.h
+	$(CC) $(CFLAGS) -o $@ $<
+
+kernel/i8259.o : kernel/i8259.c include/type.h include/const.h include/protect.h \
+			include/proto.h
+	$(CC) $(CFLAGS) -o $@ $<
+
+kernel/global.o : kernel/global.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+kernel/protect.o : kernel/protect.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+lib/klib.o : lib/klib.c
+	$(CC) $(CFLAGS) -o $@ $<
+
+lib/kliba.o : lib/kliba.asm
+	$(ASM) $(ASMKFLAGS) -o $@ $<
+
+lib/string.o : lib/string.asm
+	$(ASM) $(ASMKFLAGS) -o $@ $<

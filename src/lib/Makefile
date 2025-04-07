@@ -1,9 +1,14 @@
 # Makefile for lib
 
-ASM 		= nasm
-ASMFLAGS 	= -f elf
+KERNELINC 	= ../include
 
-TARGET = kliba.o string.o
+ASM 		= nasm
+CC 			= gcc
+ASMFLAGS 	= -f elf -I $(KERNELINC)
+CFLGAS 		= -m32 -I $(KERNELINC) -c -fno-builtin -fno-stack-protector -std=c11
+
+INC_FILE  	= $(KERNELINC)/const.h $(KERNELINC)/type.h $(KERNELINC)/protect.h $(KERNELINC)/proto.h $(KERNELINC)/global.h
+TARGET 		= klib.o kliba.o string.o
 
 .PHONY: clean all
 
@@ -17,3 +22,6 @@ kliba.o: kliba.asm
 
 string.o: string.asm
 	$(ASM) $(ASMFLAGS) -o $@ $<
+
+klib.o: klib.c $(INC_FILE)
+	$(CC) $(CFLGAS) -o $@ $<
