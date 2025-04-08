@@ -3,6 +3,9 @@
 #include "proto.h"
 #include "global.h"
 
+PRIVATE void init_idt_desc(u8 vector, u8 desc_type, int_handler handler, u8 privilege);
+PRIVATE void init_descriptor(DESCRIPTOR *p_desc, u32 base, u32 limit, u16 attribute);
+
 PUBLIC void exception_handler(int vec_no, int err_code, int eip, int cs, int eflags)
 {
     int text_color = 0x74; /* b:gray f:red */
@@ -97,9 +100,12 @@ void hwint13(void);
 void hwint14(void);
 void hwint15(void);
 
-PUBLIC void init_interrupt(void)
+PUBLIC void init_prot(void)
 {
-    /* Exception */
+    /* Initialize 8259A */
+    init_pic();
+
+    /* Initialize interrupt */
     init_idt_desc(INT_VECTOR_DIVIDE,       DA_386IGate, divide_error,          PRIVILEGE_KRNL);
     init_idt_desc(INT_VECTOR_DEBUG,        DA_386IGate, single_step_exception, PRIVILEGE_KRNL);
     init_idt_desc(INT_VECTOR_NMI,          DA_386IGate, nmi,                   PRIVILEGE_KRNL);
@@ -116,8 +122,6 @@ PUBLIC void init_interrupt(void)
     init_idt_desc(INT_VECTOR_PROTECTION,   DA_386IGate, general_protection,    PRIVILEGE_KRNL);
     init_idt_desc(INT_VECTOR_PAGE_FAULT,   DA_386IGate, page_fault,            PRIVILEGE_KRNL);
     init_idt_desc(INT_VECTOR_COPROC_ERR,   DA_386IGate, copr_error,            PRIVILEGE_KRNL);
-
-    /* Hardware interrupt */
     init_idt_desc(INT_VECTOR_IRQ0 + 0, DA_386IGate, hwint00, PRIVILEGE_KRNL);
     init_idt_desc(INT_VECTOR_IRQ0 + 1, DA_386IGate, hwint01, PRIVILEGE_KRNL);
     init_idt_desc(INT_VECTOR_IRQ0 + 2, DA_386IGate, hwint02, PRIVILEGE_KRNL);
@@ -134,4 +138,34 @@ PUBLIC void init_interrupt(void)
     init_idt_desc(INT_VECTOR_IRQ8 + 5, DA_386IGate, hwint13, PRIVILEGE_KRNL);
     init_idt_desc(INT_VECTOR_IRQ8 + 6, DA_386IGate, hwint14, PRIVILEGE_KRNL);
     init_idt_desc(INT_VECTOR_IRQ8 + 7, DA_386IGate, hwint15, PRIVILEGE_KRNL);
+
+    /* Initialize LDT descriptor in GDT */
+    init_descriptor(&gdt[INDEX_LDT_FIRST], 
+        va2pa(seg2phys(SELECTOR_KERNEL_DS), proc_table[0].ldts),
+        LDT_SIZE * sizeof(DESCRIPTOR) - 1, DA_LDT);
+
+    /* Initialize TSS descriptor in GDT */
+    memset(&tss, 0, sizeof(tss));
+    tss.ss0 = SELECTOR_KERNEL_DS; /* Important for interrupt handling */
+    init_descriptor(&gdt[INDEX_TSS], 
+        va2pa(seg2phys(SELECTOR_KERNEL_DS), &tss),
+        sizeof(tss) - 1, DA_386TSS);
+    tss.iobase = sizeof(tss);   /* No I/O bit map */
+}
+
+PRIVATE void init_descriptor(DESCRIPTOR *p_desc, u32 base, u32 limit, u16 attribute)
+{
+    p_desc->limit_low = limit & 0xFFFF;
+    p_desc->base_low = base & 0xFFFF;
+    p_desc->base_mid = (base >> 16) & 0xFF;
+    p_desc->attr1 = attribute & 0xFF;
+    p_desc->limit_high_attr2 = ((limit >> 16) & 0xF) | (attribute >> 8) | 0xF;
+    p_desc->base_high = (base >> 24) & 0xFF;
+}
+
+/* Get the physics address acording to segment selector */
+PUBLIC u32 seg2phys(u16 seg)
+{
+    DESCRIPTOR *p_desc = &gdt[seg >> 3];
+    return (p_desc->base_high << 24) | (p_desc->base_mid << 16) | (p_desc->base_low);
 }

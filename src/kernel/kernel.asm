@@ -1,14 +1,19 @@
-SELECTOR_KERNEL_CS equ 8
+%include "sconst.inc"
 
 ; Export function
 extern cstart
 extern exception_handler
 extern spurious_irq
+extern kernel_main
 
 ; Import global variable
 extern disp_pos
 extern gdt_ptr
 extern idt_ptr
+extern tss
+extern p_proc_ready
+
+[bits 32]
 
 [section .bss]
 stack_space  resb 2 * 1024
@@ -54,6 +59,8 @@ global hwint13
 global hwint14
 global hwint15
 
+global restart
+
 _start:
     mov esp, stack_top
     mov dword [disp_pos], 0
@@ -66,8 +73,10 @@ _start:
     jmp SELECTOR_KERNEL_CS:csinit
 
 csinit:
-    sti
-    hlt
+    xor eax, eax
+    mov ax, SELECTOR_TSS
+    ltr ax
+    jmp kernel_main
 
 ; Hardware interrupt
 ; ---------------------------------
@@ -81,7 +90,10 @@ csinit:
 
 ALIGN   16
 hwint00:                ; Interrupt routine for irq 0 (the clock).
-        hwint_master    0
+        inc byte [gs:0]
+        mov al, EOI
+        out INT_M_CTL, al
+        iretd
 
 ALIGN   16
 hwint01:                ; Interrupt routine for irq 1 (keyboard)
@@ -216,3 +228,19 @@ exception:
     call exception_handler
     add esp, 4*2
     hlt
+
+restart:
+    mov esp, [p_proc_ready]
+    lldt [esp + P_LDT_SEL]
+    lea eax, [esp + P_STACKTOP]
+    mov dword [tss + TSS3_S_SP0], eax
+
+    pop gs
+    pop fs
+    pop es
+    pop ds
+    popad
+
+    add esp, 4
+
+    iretd

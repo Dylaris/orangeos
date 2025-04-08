@@ -1,5 +1,5 @@
 /*
- * Constant
+ * Constant (basic and protect mode)
  */
 
 #ifndef _ORANGES_CONST_H_
@@ -10,9 +10,10 @@
 #define PRIVATE static
 #define EXTERN  extern
 
-/* Size of GDT and IDT */
+/* Size of GDT/IDT/LDT */
 #define GDT_SIZE 128
 #define IDT_SIZE 256
+#define LDT_SIZE 2      /* Each task has a LDT (has two descriptors) */
 
 /* 8259A interrupt controller port */
 #define INT_M_CTL       0x20
@@ -29,20 +30,34 @@
 #define PRIVILEGE_TASK  1
 #define PRIVILEGE_USER  3
 
+/* RPL */
+#define	RPL_KRNL    SA_RPL0
+#define	RPL_TASK    SA_RPL1
+#define	RPL_USER    SA_RPL3
+
 /* GDT descriptor index */
 #define INDEX_DUMMY     0 // ┓
 #define INDEX_FLAT_C    1 // ┣ Defined in loader
 #define INDEX_FLAT_RW   2 // ┃
 #define INDEX_VIDEO     3 // ┛
+#define INDEX_TSS       4
+#define INDEX_LDT_FIRST 5
 
 /* GDT selector */
-#define SELECTOR_DUMMY      0        // ┓
-#define SELECTOR_FLAT_C     0x08     // ┣ Defined in loader
-#define SELECTOR_FLAT_RW    0x10     // ┃
-#define SELECTOR_VIDEO      (0x18+3) // ┛<-- RPL=3
+#define SELECTOR_DUMMY      (INDEX_DUMMY<<3)           // ┓
+#define SELECTOR_FLAT_C     (INDEX_FLAT_C<<3)          // ┣ Defined in loader
+#define SELECTOR_FLAT_RW    (INDEX_FLAT_RW<<3)         // ┃
+#define SELECTOR_VIDEO      ((INDEX_VIDEO<<3)|SA_RPL3) // ┛<-- RPL=3
+#define SELECTOR_TSS        (INDEX_TSS<<3)
+#define SELECTOR_LDT_FIRST  (INDEX_LDT_FIRST<<3)
 
 #define SELECTOR_KERNEL_CS  SELECTOR_FLAT_C
 #define SELECTOR_KERNEL_DS  SELECTOR_FLAT_RW
+#define SELECTOR_KERNEL_GS  SELECTOR_VIDEO
+
+/* LDT descriptor index */
+#define INDEX_LDT_C     0
+#define INDEX_LDT_RW    1
 
 /* Type of descriptor */
 #define DA_32       0x4000  /* 32 位段    */
@@ -66,6 +81,17 @@
 #define DA_386CGate 0x8C /* 386 调用门类型值   */
 #define DA_386IGate 0x8E /* 386 中断门类型值   */
 #define DA_386TGate 0x8F /* 386 陷阱门类型值   */
+
+/* Type of selector */
+#define SA_RPL_MASK (1 << 2 - 1)
+#define SA_RPL0     0
+#define SA_RPL1     1
+#define SA_RPL2     2
+#define SA_RPL3     3
+
+#define SA_TI_MASK  (1 << 2)
+#define SA_TIG      (0 << 2)
+#define SA_TIL      (1 << 2)
 
 /* Interrupt vector */
 #define INT_VECTOR_DIVIDE       0x0

@@ -22,9 +22,12 @@ LDFLAGS  	= -m elf_i386 -s -Ttext $(ENTRYPOINT)
 DASMFLAGS 	= -u -o $(ENTRYPOINT) -e $(ENTRYOFFSET)
 
 # This Program
+INC_FILE  		= include/type.h include/const.h include/proc.h include/proto.h \
+				  include/global.h
 ORANGESBOOT 	= boot/boot.bin boot/loader.bin
 ORANGESKERNEL 	= kernel.bin
-OBJS  			= kernel/kernel.o kernel/start.o kernel/pic.o kernel/global.o kernel/trap.o lib/klib.o lib/kliba.o lib/string.o
+OBJS  			= kernel/kernel.o kernel/start.o kernel/pic.o kernel/global.o kernel/trap.o kernel/main.o \
+			      lib/klib.o lib/kliba.o lib/string.o
 DASMOUTPUT 		= kernel.bin.asm
 
 # All Phony Targets
@@ -67,23 +70,26 @@ boot/loader.bin : boot/loader.asm boot/include/load.inc \
 	$(ASM) $(ASMBFLAGS) -o $@ $<
 
 ### KERNEL 
-kernel/kernel.o : kernel/kernel.asm
+kernel/kernel.o : kernel/kernel.asm include/sconst.inc
 	$(ASM) $(ASMKFLAGS) -o $@ $<
 
-kernel/start.o: kernel/start.c include/type.h include/const.h include/proto.h
+kernel/start.o: kernel/start.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
-kernel/pic.o : kernel/pic.c include/type.h include/const.h include/proto.h
+kernel/pic.o : kernel/pic.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
 kernel/global.o : kernel/global.c
 	$(CC) $(CFLAGS) -o $@ $<
 
-kernel/trap.o : kernel/trap.c
+kernel/trap.o : kernel/trap.c $(INC_FILE)
+	$(CC) $(CFLAGS) -o $@ $<
+
+kernel/main.o : kernel/main.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
 ### LIB
-lib/klib.o : lib/klib.c
+lib/klib.o : lib/klib.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
 lib/kliba.o : lib/kliba.asm
