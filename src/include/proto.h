@@ -21,11 +21,16 @@ PUBLIC void cstart(void);
 /* kernel/main.c */
 PUBLIC int kernel_main(void);
 PUBLIC void TestA(void);
+PUBLIC void TestB(void);
+PUBLIC void TestC(void);
 
 /* kernel/trap.c */
 PUBLIC void exception_handler(int vec_no, int err_code, int eip, int cs, int eflags);
 PUBLIC void init_prot(void);
 PUBLIC u32 seg2phys(u16 seg);
+
+/* kernel/clock.c */
+PUBLIC void clock_handler(int irq);
 
 /* kernel/kernel.asm */
 PUBLIC void restart(void);
@@ -44,5 +49,6 @@ PUBLIC void disp_color_str(char *str, int color);
 /* lib/string.asm */
 PUBLIC void *memcpy(void *dst, void *src, int size);
 PUBLIC void memset(void* dst, char ch, int size);
+PUBLIC char *strcpy(char *dst, char *src);
 
 #endif /* _ORANGES_PROTO_H */

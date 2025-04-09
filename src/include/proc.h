@@ -7,9 +7,11 @@
 
 #include "type.h"
 
-#define NR_TASKS 1 /* Number of tasks */
-#define STACK_SIZE_TESTA 0x8000 /* stacks of tasks */
-#define STACK_SIZE_TOTAL STACK_SIZE_TESTA
+#define NR_TASKS 3 /* Number of tasks */
+#define STACK_SIZE_TESTA 0x8000 /* stacks of task a */
+#define STACK_SIZE_TESTB 0x8000 /* stacks of task b */
+#define STACK_SIZE_TESTC 0x8000 /* stacks of task c */
+#define STACK_SIZE_TOTAL (STACK_SIZE_TESTA + STACK_SIZE_TESTB + STACK_SIZE_TESTC)
 
 typedef struct s_stackframe {
     /* Pushed by kernel.asm:save() */
@@ -41,6 +43,14 @@ typedef struct s_proc {
     STACK_FRAME regs;   /* Process registers saved in stack frame */
     u16 ldt_sel;        /* GDT selector giving LDT base and limit */
     DESCRIPTOR ldts[LDT_SIZE];
+    u32 pid;
+    char p_name[16];
 } PROCESS;
+
+typedef struct s_task {
+    task_func initial_eip;
+    int stack_size;
+    char name[32];
+} TASK;
 
 #endif /* _ORANGES_PROC_H */

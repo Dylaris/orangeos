@@ -26,17 +26,20 @@ INC_FILE  		= include/type.h include/const.h include/proc.h include/proto.h \
 				  include/global.h
 ORANGESBOOT 	= boot/boot.bin boot/loader.bin
 ORANGESKERNEL 	= kernel.bin
-OBJS  			= kernel/kernel.o kernel/start.o kernel/pic.o kernel/global.o kernel/trap.o kernel/main.o \
+OBJS  			= kernel/kernel.o kernel/start.o kernel/pic.o kernel/global.o kernel/trap.o kernel/main.o kernel/clock.o \
 			      lib/klib.o lib/kliba.o lib/string.o
 DASMOUTPUT 		= kernel.bin.asm
 
 # All Phony Targets
-.PHONY : everything final image clean realclean disasm all buildimg
+.PHONY : everything final image clean realclean disasm all buildimg run
 
 # Default starting position
 everything : $(ORANGESBOOT) $(ORANGESKERNEL)
 
 all : realclean everything
+
+run : image
+	-bochs -f bochsrc
 
 final : all clean
 
@@ -86,6 +89,9 @@ kernel/trap.o : kernel/trap.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
 kernel/main.o : kernel/main.c $(INC_FILE)
+	$(CC) $(CFLAGS) -o $@ $<
+
+kernel/clock.o : kernel/clock.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
 ### LIB

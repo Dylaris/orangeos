@@ -5,6 +5,9 @@ extern cstart
 extern exception_handler
 extern spurious_irq
 extern kernel_main
+extern disp_str
+extern delay
+extern clock_handler
 
 ; Import global variable
 extern disp_pos
@@ -12,11 +15,15 @@ extern gdt_ptr
 extern idt_ptr
 extern tss
 extern p_proc_ready
+extern k_reenter
 
 [bits 32]
 
+[section .data]
+clock_int_msg:  db "^"
+
 [section .bss]
-stack_space  resb 2 * 1024
+stack_space:    resb 2 * 1024
 stack_top:
 
 [section .text]
@@ -90,10 +97,32 @@ csinit:
 
 ALIGN   16
 hwint00:                ; Interrupt routine for irq 0 (the clock).
-        inc byte [gs:0]
+        ; Save context
+        call save
+
+        ; Disable clock interrupt
+        in al, INT_M_CTLMASK
+        or al, 1
+        out INT_M_CTLMASK, al
+
+        ; Enable reenter
         mov al, EOI
         out INT_M_CTL, al
-        iretd
+
+        ; Interrupt handler
+        sti
+        push 0
+        call clock_handler
+        add esp, 4
+        cli
+
+        ; Enable clock interrupt
+        in al, INT_M_CTLMASK
+        and al, 0xFE
+        out INT_M_CTLMASK, al
+
+        ; Restore context throuh the pushed address by 'call save'
+        ret
 
 ALIGN   16
 hwint01:                ; Interrupt routine for irq 1 (keyboard)
@@ -229,12 +258,50 @@ exception:
     add esp, 4*2
     hlt
 
+; For a typical function, the esp before and after the call remains the same. 
+; We simply push the address of the instruction following the call onto the stack, and then use ret to return.
+; However, for the save function, it only performs the task of saving the context 
+; and stores the address of the routine that will restore the context after the interrupt ends. 
+; It does not restore the esp itself. In simpler terms, the esp changes before and after calling save. 
+; You can think of save and restart as two parts of a whole (i.e., saving the context and restoring it). 
+; However, an interrupt must occur between them, which is why they are separated. 
+; The ret instruction that ultimately returns is in the restart function, which makes the save function appear unique.
+save:
+        ;;;; ESP point to PCB (stack_frame->retaddr)
+        pushad
+        push ds
+        push es
+        push fs
+        push gs
+        mov dx, ss
+        mov ds, dx
+        mov es, dx
+
+        mov eax, esp    ; Start address of PCB
+
+        inc dword [k_reenter]
+        cmp dword [k_reenter], 0
+        jne .1
+
+        ;;;; ESP point to kernel stack
+        mov esp, stack_top  ; Switch to kernel stack
+
+        push restart
+        jmp [eax + RETADR - P_STACKBASE]
+
+.1:     ; Interrupt reenter 
+        push restart_reenter
+        jmp [eax + RETADR - P_STACKBASE]
+
 restart:
-    mov esp, [p_proc_ready]
+    ;;;; ESP point to PCB (lowest address <=> start of stack_frame)
+    mov esp, [p_proc_ready]     ; Leave kernel stack and switch to PCB
     lldt [esp + P_LDT_SEL]
     lea eax, [esp + P_STACKTOP]
-    mov dword [tss + TSS3_S_SP0], eax
-
+    mov dword [tss + TSS3_S_SP0], eax   ; Equal to tss.esp0 = stack_frame.ss
+                                        ; point to the top of pushed regs in PCB
+restart_reenter:
+    dec dword [k_reenter]
     pop gs
     pop fs
     pop es

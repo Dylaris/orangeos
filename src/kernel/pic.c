@@ -16,8 +16,7 @@ PUBLIC void init_pic(void)
     out_byte(INT_S_CTLMASK, 0x2);   /* ICW 3 to slave */
     out_byte(INT_M_CTLMASK, 0x1);   /* ICW 4 to master */
     out_byte(INT_S_CTLMASK, 0x1);   /* ICW 4 to slave */
-    out_byte(INT_M_CTLMASK, ~HWINT_MASK_KEYBOARD    /* OCW 1 to master */
-                          & ~HWINT_MASK_CLOCK);
+    out_byte(INT_M_CTLMASK, ~HWINT_MASK_CLOCK);     /* OCW 1 to master */
     out_byte(INT_S_CTLMASK, HWINT_MASK_ALL);        /* OCW 1 to slave */
 }
 

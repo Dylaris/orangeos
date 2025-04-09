@@ -58,4 +58,6 @@ typedef struct s_tss {
 
 typedef void (*int_handler)(void);
 
+typedef void (*task_func)(void);
+
 #endif /* _ORANGES_TYPE_H_ */
