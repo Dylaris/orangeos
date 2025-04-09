@@ -26,7 +26,8 @@ INC_FILE  		= include/type.h include/const.h include/proc.h include/proto.h \
 				  include/global.h
 ORANGESBOOT 	= boot/boot.bin boot/loader.bin
 ORANGESKERNEL 	= kernel.bin
-OBJS  			= kernel/kernel.o kernel/start.o kernel/pic.o kernel/global.o kernel/trap.o kernel/main.o kernel/clock.o \
+OBJS  			= kernel/kernel.o kernel/start.o kernel/pic.o kernel/global.o \
+				  kernel/trap.o kernel/main.o kernel/clock.o kernel/proc.o kernel/syscall.o \
 			      lib/klib.o lib/kliba.o lib/string.o
 DASMOUTPUT 		= kernel.bin.asm
 
@@ -76,6 +77,9 @@ boot/loader.bin : boot/loader.asm boot/include/load.inc \
 kernel/kernel.o : kernel/kernel.asm include/sconst.inc
 	$(ASM) $(ASMKFLAGS) -o $@ $<
 
+kernel/syscall.o : kernel/syscall.asm include/sconst.inc
+	$(ASM) $(ASMKFLAGS) -o $@ $<
+
 kernel/start.o: kernel/start.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
@@ -94,11 +98,14 @@ kernel/main.o : kernel/main.c $(INC_FILE)
 kernel/clock.o : kernel/clock.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
+kernel/proc.o : kernel/proc.c $(INC_FILE)
+	$(CC) $(CFLAGS) -o $@ $<
+
 ### LIB
 lib/klib.o : lib/klib.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
-lib/kliba.o : lib/kliba.asm
+lib/kliba.o : lib/kliba.asm include/sconst.inc
 	$(ASM) $(ASMKFLAGS) -o $@ $<
 
 lib/string.o : lib/string.asm

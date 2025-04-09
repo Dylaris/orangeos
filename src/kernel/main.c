@@ -8,15 +8,12 @@ PUBLIC int kernel_main(void)
 {
     disp_str("-----\"kernel_main\" begins-----\n");
 
-    task_table[0] = (TASK) {TestA, STACK_SIZE_TESTA, "TestA"};
-    task_table[1] = (TASK) {TestB, STACK_SIZE_TESTB, "TestB"};
-    task_table[2] = (TASK) {TestC, STACK_SIZE_TESTC, "TestC"};
-
     TASK    *p_task       = task_table;
     PROCESS *p_proc       = proc_table;
     char    *p_task_stack = task_stack + STACK_SIZE_TOTAL;
     u16     selector_ldt  = SELECTOR_LDT_FIRST;
 
+    /* Initialize process table */
     for (int i = 0; i < NR_TASKS; i++) {
         strcpy(p_proc->p_name, p_task->name);
         p_proc->pid = i;
@@ -44,8 +41,20 @@ PUBLIC int kernel_main(void)
         selector_ldt += 1 << 3;
     }
 
+    /* Initialize 8253 pit (10ms between clock interrupt) */
+    out_byte(TIMER_MODE, RATE_GENERATOR);
+    out_byte(TIMER0, (u8) (TIMER_FREQ/HZ));
+    out_byte(TIMER0, (u8) ((TIMER_FREQ/HZ) >> 8)); 
+
+    /* Set clock interrupt handler */
+    put_irq_handler(CLOCK_IRQ, clock_handler);
+    enable_irq(CLOCK_IRQ);
+
+    /* Initialize global variable */
+    ticks = 0;
     k_reenter = 0;
     p_proc_ready = proc_table;
+
     restart(); /* ring0 to ring1 */
 
     while (1) {}
@@ -53,33 +62,24 @@ PUBLIC int kernel_main(void)
 
 void TestA(void)
 {
-    int i = 0;
     while (1) {
-        disp_str("A");
-        disp_int(i++);
-        disp_str(".");
-        delay(1);
+        disp_str("A.");
+        milli_delay(300);
     }
 }
 
 void TestB(void)
 {
-    int i = 0x1000;
     while (1) {
-        disp_str("B");
-        disp_int(i++);
-        disp_str(".");
-        delay(1);
+        disp_str("B.");
+        milli_delay(900);
     }
 }
 
 void TestC(void)
 {
-    int i = 0x2000;
     while (1) {
-        disp_str("C");
-        disp_int(i++);
-        disp_str(".");
-        delay(1);
+        disp_str("C.");
+        milli_delay(1500);
     }
 }

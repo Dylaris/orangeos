@@ -14,6 +14,7 @@
 /* kernel/pic.c */
 PUBLIC void init_pic(void);
 PUBLIC void spurious_irq(int irq);
+PUBLIC void put_irq_handler(int irq, irq_handler handler);
 
 /* kernel/start.c */
 PUBLIC void cstart(void);
@@ -31,9 +32,17 @@ PUBLIC u32 seg2phys(u16 seg);
 
 /* kernel/clock.c */
 PUBLIC void clock_handler(int irq);
+PUBLIC void milli_delay(int milli_sec);
 
 /* kernel/kernel.asm */
 PUBLIC void restart(void);
+PUBLIC void sys_call(void);     /* System call handler */
+
+/* kernel/proc.c */
+PUBLIC int sys_get_ticks(void);
+
+/* kernel/syscall.asm */
+PUBLIC int get_ticks(void);
 
 /* lib/klib.c */
 PUBLIC char *itoa(char *buf, int num);
@@ -45,6 +54,8 @@ PUBLIC void out_byte(u16 port, u8 value);
 PUBLIC u8   in_byte(u16 port);
 PUBLIC void disp_str(char *str);
 PUBLIC void disp_color_str(char *str, int color);
+PUBLIC void disable_irq(int irq);
+PUBLIC void enable_irq(int irq);
 
 /* lib/string.asm */
 PUBLIC void *memcpy(void *dst, void *src, int size);

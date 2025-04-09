@@ -16,6 +16,8 @@ extern idt_ptr
 extern tss
 extern p_proc_ready
 extern k_reenter
+extern irq_table
+extern sys_call_table
 
 [bits 32]
 
@@ -68,6 +70,8 @@ global hwint15
 
 global restart
 
+global sys_call
+
 _start:
     mov esp, stack_top
     mov dword [disp_pos], 0
@@ -88,41 +92,42 @@ csinit:
 ; Hardware interrupt
 ; ---------------------------------
 %macro  hwint_master    1
-        push    %1
-        call    spurious_irq
-        add     esp, 4
-        hlt
-%endmacro
-; ---------------------------------
-
-ALIGN   16
-hwint00:                ; Interrupt routine for irq 0 (the clock).
         ; Save context
         call save
 
-        ; Disable clock interrupt
+        ; Disable current interrupt
         in al, INT_M_CTLMASK
-        or al, 1
+        or al, (1 << %1)
         out INT_M_CTLMASK, al
 
         ; Enable reenter
         mov al, EOI
         out INT_M_CTL, al
 
-        ; Interrupt handler
+        ; Enable interrupt (CPU will disable interrupt when responsing to interrupt)
         sti
-        push 0
-        call clock_handler
-        add esp, 4
+
+        ; Interrupt handler
+        push %1
+        call [irq_table + 4 * %1]
+        pop ecx
+
+        ; Disable interrupt
         cli
 
-        ; Enable clock interrupt
+        ; Enable current interrupt
         in al, INT_M_CTLMASK
-        and al, 0xFE
+        and al, ~(1 << %1)
         out INT_M_CTLMASK, al
 
-        ; Restore context throuh the pushed address by 'call save'
+        ; Restore context through the pushed address by 'call save'
         ret
+%endmacro
+; ---------------------------------
+
+ALIGN   16
+hwint00:                ; Interrupt routine for irq 0 (the clock).
+        hwint_master    0
 
 ALIGN   16
 hwint01:                ; Interrupt routine for irq 1 (keyboard)
@@ -277,21 +282,22 @@ save:
         mov ds, dx
         mov es, dx
 
-        mov eax, esp    ; Start address of PCB
+        mov esi, esp    ; Start address of PCB
 
         inc dword [k_reenter]
         cmp dword [k_reenter], 0
         jne .1
 
         ;;;; ESP point to kernel stack
-        mov esp, stack_top  ; Switch to kernel stack
+        mov esp, stack_top  ; k_reenter==0, it means this interrupt happened from ring1 to ring0
+                            ; So it needed to be switched to kernel stack
 
         push restart
-        jmp [eax + RETADR - P_STACKBASE]
+        jmp [esi + RETADR - P_STACKBASE]
 
-.1:     ; Interrupt reenter 
-        push restart_reenter
-        jmp [eax + RETADR - P_STACKBASE]
+.1:     ; Interrupt reenter     ; k_reenter!=0, it means this interrupt happened from ring0 to ring0
+        push restart_reenter    ; So it is already in kernel stack
+        jmp [esi + RETADR - P_STACKBASE]
 
 restart:
     ;;;; ESP point to PCB (lowest address <=> start of stack_frame)
@@ -311,3 +317,15 @@ restart_reenter:
     add esp, 4
 
     iretd
+
+sys_call:
+    call save
+
+    sti
+
+    call [sys_call_table + eax * 4]         ; EAX store system call vector
+    mov [esi + EAXREG - P_STACKBASE], eax   ; EAX store return value
+
+    cli
+
+    ret
