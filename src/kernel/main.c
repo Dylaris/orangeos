@@ -1,8 +1,6 @@
-#include "type.h"
-#include "const.h"
-#include "proto.h"
-#include "global.h"
+#include "inc.h"
 #include "proc.h"
+#include "asm/asm.h"
 
 PUBLIC int kernel_main(void)
 {

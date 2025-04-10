@@ -2,20 +2,24 @@
  * Global variable
  */
 
-#ifndef _ORANGES_GLOBAL_H
-#define _ORANGES_GLOBAL_H
+#ifndef _ORANGES_SYMBOL_H
+#define _ORANGES_SYMBOL_H
 
 #include "type.h"
 #include "const.h"
 #include "proc.h"
+#include "asm/pic.h"
+#include "syscall.h"
+#include "keyboard.h"
 
-#ifdef GLOBAL_VARIABLE_HERE
+#ifdef SYMBOL_HERE
 #undef  EXTERN
 #define EXTERN
-#endif /* GLOBAL_VARIABLE_HERE */
+#endif /* SYMBOL_HERE */
 
 EXTERN int          disp_pos;   /* Display position in screen */
 EXTERN int          ticks;      /* Clock ticks */
+EXTERN KB_INPUT     kb_in; 
 
 EXTERN char         task_stack[STACK_SIZE_TOTAL];   /* The total stack space for all tasks */
 EXTERN TSS          tss;            /* Store the information of running process (ldt and esp0) */
@@ -33,4 +37,6 @@ extern TASK         task_table[NR_TASKS];   /* Store the basic information of ta
 EXTERN irq_handler  irq_table[NR_IRQ];      /* Store the irq handler */
 extern system_call  sys_call_table[NR_SYS_CALL];
 
-#endif /* _ORANGES_GLOBAL_H */
+extern u32          keymap[NR_SCAN_CODES * MAP_COLS];
+
+#endif /* _ORANGES_SYMBOL_H */

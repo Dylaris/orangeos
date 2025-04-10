@@ -23,13 +23,14 @@ DASMFLAGS 	= -u -o $(ENTRYPOINT) -e $(ENTRYOFFSET)
 
 # This Program
 INC_FILE  		= include/type.h include/const.h include/proc.h include/proto.h \
-				  include/global.h
+				  include/symbol.h include/syscall.h include/asm/asm.h include/asm/pic.h \
+				  include/asm/pit.h
 ORANGESBOOT 	= boot/boot.bin boot/loader.bin
 ORANGESKERNEL 	= kernel.bin
-OBJS  			= kernel/kernel.o kernel/start.o kernel/pic.o kernel/global.o \
-				  kernel/trap.o kernel/main.o kernel/clock.o kernel/proc.o kernel/syscall.o \
-				  kernel/pit.o kernel/keyboard.o \
-			      lib/klib.o lib/kliba.o lib/string.o
+OBJS			= kernel/kernel.o kernel/syscall.o kernel/init.o kernel/main.o \
+				  kernel/dev/clock.o kernel/dev/keyboard.o \
+				  kernel/asm/pic.o kernel/asm/pit.o kernel/symbol.o kernel/trap.o kernel/proc.o \
+				  lib/kliba.o lib/klib.o lib/string.o
 DASMOUTPUT 		= kernel.bin.asm
 
 # All Phony Targets
@@ -75,22 +76,22 @@ boot/loader.bin : boot/loader.asm boot/include/load.inc \
 	$(ASM) $(ASMBFLAGS) -o $@ $<
 
 ### KERNEL 
-kernel/kernel.o : kernel/kernel.asm include/sconst.inc
+kernel/kernel.o : kernel/kernel.asm include/asm/sconst.inc
 	$(ASM) $(ASMKFLAGS) -o $@ $<
 
-kernel/syscall.o : kernel/syscall.asm include/sconst.inc
+kernel/syscall.o : kernel/syscall.asm include/asm/sconst.inc
 	$(ASM) $(ASMKFLAGS) -o $@ $<
 
-kernel/start.o: kernel/start.c $(INC_FILE)
+kernel/init.o: kernel/init.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
-kernel/pic.o : kernel/pic.c $(INC_FILE)
+kernel/asm/pic.o : kernel/asm/pic.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
-kernel/pit.o : kernel/pit.c $(INC_FILE)
+kernel/asm/pit.o : kernel/asm/pit.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
-kernel/global.o : kernel/global.c
+kernel/symbol.o : kernel/symbol.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
 kernel/trap.o : kernel/trap.c $(INC_FILE)
@@ -99,20 +100,20 @@ kernel/trap.o : kernel/trap.c $(INC_FILE)
 kernel/main.o : kernel/main.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
-kernel/clock.o : kernel/clock.c $(INC_FILE)
+kernel/dev/clock.o : kernel/dev/clock.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
 kernel/proc.o : kernel/proc.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
-kernel/keyboard.o : kernel/keyboard.c $(INC_FILE)
+kernel/dev/keyboard.o : kernel/dev/keyboard.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
 ### LIB
 lib/klib.o : lib/klib.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
-lib/kliba.o : lib/kliba.asm include/sconst.inc
+lib/kliba.o : lib/kliba.asm include/asm/sconst.inc
 	$(ASM) $(ASMKFLAGS) -o $@ $<
 
 lib/string.o : lib/string.asm

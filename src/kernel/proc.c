@@ -1,13 +1,5 @@
-#include "type.h"
-#include "const.h"
-#include "proto.h"
-#include "global.h"
+#include "inc.h"
 #include "proc.h"
-
-PUBLIC int sys_get_ticks(void)
-{
-    return ticks;
-}
 
 PUBLIC void schedule(void)
 {

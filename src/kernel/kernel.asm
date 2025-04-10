@@ -1,13 +1,10 @@
-%include "sconst.inc"
+%include "asm/sconst.inc"
 
 ; Export function
-extern cstart
+extern init
 extern exception_handler
 extern spurious_irq
 extern kernel_main
-extern disp_str
-extern delay
-extern clock_handler
 
 ; Import global variable
 extern disp_pos
@@ -20,9 +17,6 @@ extern irq_table
 extern sys_call_table
 
 [bits 32]
-
-[section .data]
-clock_int_msg:  db "^"
 
 [section .bss]
 stack_space:    resb 2 * 1024
@@ -77,7 +71,7 @@ _start:
     mov dword [disp_pos], 0
 
     sgdt [gdt_ptr]
-    call cstart
+    call init
     lgdt [gdt_ptr]
     lidt [idt_ptr]
 

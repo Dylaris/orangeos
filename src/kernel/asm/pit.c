@@ -1,6 +1,5 @@
-#include "proto.h"
-#include "const.h"
-#include "global.h"
+#include "inc.h"
+#include "asm/pit.h"
 
 PUBLIC void init_pit(void)
 {

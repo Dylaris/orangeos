@@ -6,6 +6,7 @@
 #define _ORANGES_PROC_H
 
 #include "type.h"
+#include "asm/asm.h"
 
 #define NR_TASKS 3 /* Number of tasks */
 #define STACK_SIZE_TESTA 0x8000 /* stacks of task a */

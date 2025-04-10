@@ -1,6 +1,5 @@
-#include "proto.h"
-#include "const.h"
-#include "global.h"
+#include "asm/pic.h"
+#include "inc.h"
 
 PUBLIC void init_pic(void)
 {
@@ -19,13 +18,6 @@ PUBLIC void init_pic(void)
     /* Initialize irq table */
     for (int i = 0; i < NR_IRQ; i++)
         irq_table[i] = spurious_irq;
-}
-
-PUBLIC void spurious_irq(int irq)
-{
-    disp_str("spurisous_irq: ");
-    disp_int(irq);
-    disp_str("\n");
 }
 
 PUBLIC void put_irq_handler(int irq, irq_handler handler)

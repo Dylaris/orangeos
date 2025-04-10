@@ -1,6 +1,9 @@
-%include "sconst.inc"
+%include "asm/sconst.inc"
 
-_NR_get_ticks       equ 0   ; Same with sys_call_table in global.c
+; Used in user space
+; _NR_ is the index of system call in sys_call_table
+
+_NR_get_ticks       equ 0
 INT_VECTOR_SYS_CALL equ 0x90
 
 ; Export function

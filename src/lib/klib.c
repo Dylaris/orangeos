@@ -1,7 +1,5 @@
-#include "type.h"
-#include "const.h"
-#include "proto.h"
-#include "global.h"
+#include "inc.h"
+#include "asm/pit.h"
 
 PUBLIC char *itoa(char *buf, int num) 
 {
@@ -36,11 +34,8 @@ PUBLIC void disp_int(int input)
     disp_str(output);
 }
 
-PUBLIC void delay(int time)
+PUBLIC void milli_delay(int milli_sec)
 {
-    for (int k = 0; k < time; k++) {
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10000; j++) {}
-        }
-    }
+    int t = get_ticks();
+    while (((get_ticks() - t) * 1000 / HZ) < milli_sec) {}
 }

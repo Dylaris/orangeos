@@ -1,4 +1,4 @@
-%include "sconst.inc"
+%include "asm/sconst.inc"
 
 ; Import global variable
 extern disp_pos
@@ -11,6 +11,8 @@ global out_byte
 global in_byte
 global disable_irq
 global enable_irq
+global disable_int
+global enable_int
 
 ;===== void disp_str(char *str);
 disp_str:
@@ -182,4 +184,15 @@ enable_8:
     and al, ah
     out INT_S_CTLMASK, al       ; clear bit at slave 8259
     popf
+    ret
+
+
+;===== void disable_int(void);
+disable_int:
+    cli
+    ret
+
+;===== void enable_int(void);
+enable_int:
+    sti
     ret
