@@ -13,6 +13,10 @@ PUBLIC int kernel_main(void)
     char    *p_task_stack = task_stack + STACK_SIZE_TOTAL;
     u16     selector_ldt  = SELECTOR_LDT_FIRST;
 
+    proc_table[0].ticks = proc_table[0].priority = 15;
+    proc_table[1].ticks = proc_table[1].priority = 5;
+    proc_table[2].ticks = proc_table[2].priority = 3;
+
     /* Initialize process table */
     for (int i = 0; i < NR_TASKS; i++) {
         strcpy(p_proc->p_name, p_task->name);
@@ -41,14 +45,9 @@ PUBLIC int kernel_main(void)
         selector_ldt += 1 << 3;
     }
 
-    /* Initialize 8253 pit (10ms between clock interrupt) */
-    out_byte(TIMER_MODE, RATE_GENERATOR);
-    out_byte(TIMER0, (u8) (TIMER_FREQ/HZ));
-    out_byte(TIMER0, (u8) ((TIMER_FREQ/HZ) >> 8)); 
-
-    /* Set clock interrupt handler */
-    put_irq_handler(CLOCK_IRQ, clock_handler);
-    enable_irq(CLOCK_IRQ);
+    /* Reset interrupt handler */
+    init_clock();
+    init_keyboard();
 
     /* Initialize global variable */
     ticks = 0;
@@ -63,23 +62,23 @@ PUBLIC int kernel_main(void)
 void TestA(void)
 {
     while (1) {
-        disp_str("A.");
-        milli_delay(300);
+        // disp_color_str("A.", BRIGHT | MAKE_COLOR(BLACK, RED));
+        milli_delay(10);
     }
 }
 
 void TestB(void)
 {
     while (1) {
-        disp_str("B.");
-        milli_delay(900);
+        // disp_color_str("B.", BRIGHT | MAKE_COLOR(BLACK, GREEN));
+        milli_delay(10);
     }
 }
 
 void TestC(void)
 {
     while (1) {
-        disp_str("C.");
-        milli_delay(1500);
+        // disp_color_str("C.", BRIGHT | MAKE_COLOR(BLACK, BLUE));
+        milli_delay(10);
     }
 }

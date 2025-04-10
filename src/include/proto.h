@@ -31,8 +31,13 @@ PUBLIC void init_prot(void);
 PUBLIC u32 seg2phys(u16 seg);
 
 /* kernel/clock.c */
+PUBLIC void init_clock(void);
 PUBLIC void clock_handler(int irq);
 PUBLIC void milli_delay(int milli_sec);
+
+/* kernel/keyboard.c */
+PUBLIC void init_keyboard(void);
+PUBLIC void keyboard_handler(int irq);
 
 /* kernel/kernel.asm */
 PUBLIC void restart(void);
@@ -40,9 +45,13 @@ PUBLIC void sys_call(void);     /* System call handler */
 
 /* kernel/proc.c */
 PUBLIC int sys_get_ticks(void);
+PUBLIC void schedule(void);
 
 /* kernel/syscall.asm */
 PUBLIC int get_ticks(void);
+
+/* kernel/pit.c */
+PUBLIC void init_pit(void);
 
 /* lib/klib.c */
 PUBLIC char *itoa(char *buf, int num);

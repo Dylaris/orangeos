@@ -106,6 +106,9 @@ PUBLIC void init_prot(void)
     /* Initialize 8259A */
     init_pic();
 
+    /* Initialize 8253 */
+    init_pit();
+
     /*
      * Intialize interrupt
      */

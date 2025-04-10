@@ -4,7 +4,6 @@
 
 PUBLIC void init_pic(void)
 {
-
     /* Initialize 8258A */
     out_byte(INT_M_CTL, 0x11);      /* ICW 1 to master */ 
     out_byte(INT_S_CTL, 0x11);      /* ICW 1 to slave */

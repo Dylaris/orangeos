@@ -28,6 +28,7 @@ ORANGESBOOT 	= boot/boot.bin boot/loader.bin
 ORANGESKERNEL 	= kernel.bin
 OBJS  			= kernel/kernel.o kernel/start.o kernel/pic.o kernel/global.o \
 				  kernel/trap.o kernel/main.o kernel/clock.o kernel/proc.o kernel/syscall.o \
+				  kernel/pit.o kernel/keyboard.o \
 			      lib/klib.o lib/kliba.o lib/string.o
 DASMOUTPUT 		= kernel.bin.asm
 
@@ -86,6 +87,9 @@ kernel/start.o: kernel/start.c $(INC_FILE)
 kernel/pic.o : kernel/pic.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
+kernel/pit.o : kernel/pit.c $(INC_FILE)
+	$(CC) $(CFLAGS) -o $@ $<
+
 kernel/global.o : kernel/global.c
 	$(CC) $(CFLAGS) -o $@ $<
 
@@ -99,6 +103,9 @@ kernel/clock.o : kernel/clock.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
 kernel/proc.o : kernel/proc.c $(INC_FILE)
+	$(CC) $(CFLAGS) -o $@ $<
+
+kernel/keyboard.o : kernel/keyboard.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
 ### LIB
