@@ -1,4 +1,5 @@
-#include "inc.h"
+#include "const.h"
+#include "proto.h"
 #include "asm/pit.h"
 
 PUBLIC char *itoa(char *buf, int num) 

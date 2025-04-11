@@ -29,4 +29,6 @@
 
 #define MAKE_COLOR(b, f) ((b<<4) | f) /* MAKE_COLOR(Background, Foreground) */
 
+#define DEFAULT_CHAR_COLOR 0x07
+
 #endif /* _ORANGES_CONST_H_ */

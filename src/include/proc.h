@@ -2,17 +2,18 @@
  * Process
  */
 
-#ifndef _ORANGES_PROC_H
-#define _ORANGES_PROC_H
+#ifndef _ORANGES_PROC_H_
+#define _ORANGES_PROC_H_
 
 #include "type.h"
 #include "asm/asm.h"
 
-#define NR_TASKS 3 /* Number of tasks */
+#define NR_TASKS 4 /* Number of tasks */
+#define STACK_SIZE_TTY   0x8000 /* stacks of task tty */
 #define STACK_SIZE_TESTA 0x8000 /* stacks of task a */
 #define STACK_SIZE_TESTB 0x8000 /* stacks of task b */
 #define STACK_SIZE_TESTC 0x8000 /* stacks of task c */
-#define STACK_SIZE_TOTAL (STACK_SIZE_TESTA + STACK_SIZE_TESTB + STACK_SIZE_TESTC)
+#define STACK_SIZE_TOTAL (STACK_SIZE_TESTA + STACK_SIZE_TESTB + STACK_SIZE_TESTC + STACK_SIZE_TTY)
 
 typedef struct s_stackframe {
     /* Pushed by kernel.asm:save() */
@@ -59,4 +60,4 @@ typedef struct s_task {
     char name[32];
 } TASK;
 
-#endif /* _ORANGES_PROC_H */
+#endif /* _ORANGES_PROC_H_ */

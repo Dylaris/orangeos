@@ -1,4 +1,5 @@
-#include "inc.h"
+#include "const.h"
+#include "symbol.h"
 #include "proc.h"
 
 PUBLIC void schedule(void)

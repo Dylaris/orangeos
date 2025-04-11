@@ -2,11 +2,13 @@
  * Function prototype
  */
 
-#ifndef _ORANGES_PROTO_H
-#define _ORANGES_PROTO_H
+#ifndef _ORANGES_PROTO_H_
+#define _ORANGES_PROTO_H_
 
 #include "type.h"
 #include "const.h"
+#include "console.h"
+#include "tty.h"
 
 /* Virtual address to physics address */
 #define va2pa(seg_base, va) ((u32) (seg_base) + (u32) (va))
@@ -23,6 +25,7 @@ PUBLIC void init_clock(void);
 
 /* kernel/dev/keyboard.c */
 PUBLIC void init_keyboard(void);
+PUBLIC void keyboard_read(TTY *p_tty);
 
 /* kernel/init.c */
 PUBLIC void init(void);
@@ -42,6 +45,14 @@ PUBLIC void schedule(void);
 
 /* kernel/syscall.asm */
 PUBLIC int get_ticks(void);
+
+/* kernel/tty.c */
+PUBLIC void task_tty(void);
+PUBLIC void in_process(TTY *p_tty, u32 key);
+
+/* kernel/console.c */
+PUBLIC int is_current_console(CONSOLE *p_con);
+PUBLIC void out_char(CONSOLE *p_con, char ch);
 
 /* kernel/trap.c */
 PUBLIC void exception_handler(int vec_no, int err_code, int eip, int cs, int eflags);
@@ -70,4 +81,4 @@ PUBLIC void *memcpy(void *dst, void *src, int size);
 PUBLIC void memset(void* dst, char ch, int size);
 PUBLIC char *strcpy(char *dst, char *src);
 
-#endif /* _ORANGES_PROTO_H */
+#endif /* _ORANGES_PROTO_H_ */

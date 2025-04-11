@@ -1,6 +1,9 @@
-#include "inc.h"
-#include "asm/asm.h"
+#include "const.h"
+#include "symbol.h"
 #include "proc.h"
+#include "proto.h"
+#include "asm/asm.h"
+#include "asm/pic.h"
 
 PRIVATE void init_interrupt(void);
 PRIVATE void init_idt_desc(u8 vector, u8 desc_type, int_handler handler, u8 privilege);

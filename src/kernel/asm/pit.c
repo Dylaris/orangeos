@@ -1,4 +1,6 @@
-#include "inc.h"
+#include "type.h"
+#include "const.h"
+#include "proto.h"
 #include "asm/pit.h"
 
 PUBLIC void init_pit(void)

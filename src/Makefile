@@ -24,13 +24,15 @@ DASMFLAGS 	= -u -o $(ENTRYPOINT) -e $(ENTRYOFFSET)
 # This Program
 INC_FILE  		= include/type.h include/const.h include/proc.h include/proto.h \
 				  include/symbol.h include/syscall.h include/asm/asm.h include/asm/pic.h \
-				  include/asm/pit.h
+				  include/asm/pit.h include/keyboard.h include/tty.h include/asm/vga.h \
+				  include/console.h include/asm/kb.h
 ORANGESBOOT 	= boot/boot.bin boot/loader.bin
 ORANGESKERNEL 	= kernel.bin
 OBJS			= kernel/kernel.o kernel/syscall.o kernel/init.o kernel/main.o \
-				  kernel/dev/clock.o kernel/dev/keyboard.o \
+				  kernel/dev/clock.o kernel/dev/keyboard.o kernel/tty.o kernel/console.o \
 				  kernel/asm/pic.o kernel/asm/pit.o kernel/symbol.o kernel/trap.o kernel/proc.o \
 				  lib/kliba.o lib/klib.o lib/string.o
+
 DASMOUTPUT 		= kernel.bin.asm
 
 # All Phony Targets
@@ -107,6 +109,12 @@ kernel/proc.o : kernel/proc.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
 kernel/dev/keyboard.o : kernel/dev/keyboard.c $(INC_FILE)
+	$(CC) $(CFLAGS) -o $@ $<
+
+kernel/tty.o : kernel/tty.c $(INC_FILE)
+	$(CC) $(CFLAGS) -o $@ $<
+
+kernel/console.o : kernel/console.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
 ### LIB

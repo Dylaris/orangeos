@@ -113,5 +113,4 @@ typedef struct s_kb {
     char buf[KB_IN_BYTES];  /* Buffer */
 } KB_INPUT;
 
-
 #endif /* _ORANGES_KEYBOARD_H_ */

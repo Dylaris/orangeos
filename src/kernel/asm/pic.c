@@ -1,5 +1,8 @@
+#include "const.h"
+#include "type.h"
 #include "asm/pic.h"
-#include "inc.h"
+#include "symbol.h"
+#include "proto.h"
 
 PUBLIC void init_pic(void)
 {

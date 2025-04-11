@@ -1,6 +1,7 @@
-#include "inc.h"
+#include "const.h"
 #include "proc.h"
-#include "asm/asm.h"
+#include "proto.h"
+#include "symbol.h"
 
 PUBLIC int kernel_main(void)
 {

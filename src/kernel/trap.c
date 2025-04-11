@@ -1,6 +1,7 @@
-#include "inc.h"
+#include "const.h"
+#include "symbol.h"
+#include "proto.h"
 #include "asm/kb.h"
-#include "keyboard.h"
 
 /*=========================================================*
                         EXCEPTION
@@ -72,7 +73,6 @@ PUBLIC void keyboard_handler(int irq)
             kb_in.p_head = kb_in.buf;
         kb_in.count++;
     }
-    disp_int(scan_code);
 }
 
 PUBLIC void clock_handler(int irq)

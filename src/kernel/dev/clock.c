@@ -1,4 +1,5 @@
-#include "inc.h"
+#include "proto.h"
+#include "asm/pic.h"
 
 PUBLIC void init_clock(void)
 {
