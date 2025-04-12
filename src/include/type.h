@@ -13,5 +13,6 @@ typedef void (*int_handler)(void);      /* Exception handler */
 typedef void (*task_func)(void);        /* Function pointer that task executes */
 typedef void (*irq_handler)(int irq);   /* Hardware interrupt handler */
 typedef void *system_call;
+typedef char *va_list;
 
 #endif /* _ORANGES_TYPE_H_ */

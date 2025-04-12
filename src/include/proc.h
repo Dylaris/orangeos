@@ -49,11 +49,13 @@ typedef struct s_proc {
     u16 ldt_sel;        /* LDT selector in GDT */
     DESCRIPTOR ldts[LDT_SIZE];  /* Descriptors in LDT (code and data) */
 
-    int ticks;
-    int priority;
+    int ticks;          /* Remained execution time */
+    int priority;       /* For process schedule */
 
     u32 pid;
     char p_name[16];
+
+    int nr_tty;         /* Control tty */
 } PROCESS;
 
 typedef struct s_task {

@@ -26,7 +26,7 @@ PUBLIC TASK user_proc_table[NR_PROCS] = {
 };
 
 PUBLIC system_call sys_call_table[NR_SYS_CALL] = {
-    sys_get_ticks
+    sys_get_ticks, sys_write
 };
 
 PUBLIC u32 keymap[NR_SCAN_CODES * MAP_COLS] = {

@@ -9,6 +9,7 @@
 #include "const.h"
 #include "console.h"
 #include "tty.h"
+#include "proc.h"
 
 /* Virtual address to physics address */
 #define va2pa(seg_base, va) ((u32) (seg_base) + (u32) (va))
@@ -45,10 +46,12 @@ PUBLIC void schedule(void);
 
 /* kernel/syscall.asm */
 PUBLIC int get_ticks(void);
+PUBLIC void write(char *buf, int len);
 
 /* kernel/tty.c */
 PUBLIC void task_tty(void);
 PUBLIC void in_process(TTY *p_tty, u32 key);
+PUBLIC void tty_write(TTY *p_tty, char *buf, int len);
 
 /* kernel/console.c */
 PUBLIC int is_current_console(CONSOLE *p_con);
@@ -63,6 +66,11 @@ PUBLIC void spurious_irq(int irq);
 PUBLIC void keyboard_handler(int irq);
 PUBLIC void clock_handler(int irq);
 PUBLIC int sys_get_ticks(void);
+PUBLIC int sys_write(char *buf, int len, PROCESS *p_proc);
+
+/* kernel/printf.c */
+PUBLIC int printf(const char *fmt, ...);
+PUBLIC int vsprintf(char *buf, const char *fmt, va_list args);
 
 /* lib/klib.c */
 PUBLIC char *itoa(char *buf, int num);
@@ -83,5 +91,6 @@ PUBLIC void enable_int(void);
 PUBLIC void *memcpy(void *dst, void *src, int size);
 PUBLIC void memset(void* dst, char ch, int size);
 PUBLIC char *strcpy(char *dst, char *src);
+PUBLIC int strlen(char *str);
 
 #endif /* _ORANGES_PROTO_H_ */

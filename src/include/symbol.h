@@ -33,9 +33,9 @@ EXTERN DESCRIPTOR   gdt[GDT_SIZE];
 EXTERN u8           idt_ptr[6];
 EXTERN GATE         idt[IDT_SIZE];
 
-extern PROCESS      proc_table[];       /* Store the context of process (PCB) */
-extern TASK         task_table[];       /* Store the task (ring 1) */
-extern TASK         user_proc_table[];  /* Store the user process (ring 3) */
+extern PROCESS      proc_table[];       /* Store the context of all processes (PCB) */
+extern TASK         task_table[];       /* Ring 1 process (task) */
+extern TASK         user_proc_table[];  /* Ring 3 process (user process) */
 extern irq_handler  irq_table[];        /* Store the irq handler */
 extern system_call  sys_call_table[];   /* Used in kernel space */
 extern TTY          tty_table[];        /* TTY table (keyboard and console) */

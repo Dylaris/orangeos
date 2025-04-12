@@ -31,6 +31,7 @@ ORANGESKERNEL 	= kernel.bin
 OBJS			= kernel/kernel.o kernel/syscall.o kernel/init.o kernel/main.o \
 				  kernel/dev/clock.o kernel/dev/keyboard.o kernel/tty.o kernel/console.o \
 				  kernel/asm/pic.o kernel/asm/pit.o kernel/symbol.o kernel/trap.o kernel/proc.o \
+				  kernel/printf.o \
 				  lib/kliba.o lib/klib.o lib/string.o
 
 DASMOUTPUT 		= kernel.bin.asm
@@ -115,6 +116,9 @@ kernel/tty.o : kernel/tty.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
 kernel/console.o : kernel/console.c $(INC_FILE)
+	$(CC) $(CFLAGS) -o $@ $<
+
+kernel/printf.o : kernel/printf.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
 ### LIB

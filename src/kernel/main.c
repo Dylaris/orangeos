@@ -31,6 +31,8 @@ PUBLIC int kernel_main(void)
             eflags    = 0x202;      /* IF = 1, bit 2 is always 1 */
         }
 
+        p_proc->nr_tty = 0;
+
         strcpy(p_proc->p_name, p_task->name);
         p_proc->pid = i;
 
@@ -51,15 +53,22 @@ PUBLIC int kernel_main(void)
         p_proc->regs.esp = (u32) p_task_stack;
         p_proc->regs.eflags = eflags;
 
+        p_proc->nr_tty = 0;
+
         p_task_stack -= p_task->stack_size;
         p_task++;
         p_proc++;
         selector_ldt += 1 << 3;
     }
 
-    proc_table[0].ticks = proc_table[0].priority = 15;
+    proc_table[0].ticks = proc_table[0].priority = 15; /* Necessary for IO responsing */
     proc_table[1].ticks = proc_table[1].priority = 5;
-    proc_table[2].ticks = proc_table[2].priority = 3;
+    proc_table[2].ticks = proc_table[2].priority = 5;
+    proc_table[3].ticks = proc_table[3].priority = 5;
+
+    proc_table[1].nr_tty = 0;
+    proc_table[2].nr_tty = 1;
+    proc_table[3].nr_tty = 2;
 
     /* Reset interrupt handler */
     init_clock();
@@ -78,23 +87,23 @@ PUBLIC int kernel_main(void)
 void TestA(void)
 {
     while (1) {
-        // disp_color_str("A.", BRIGHT | MAKE_COLOR(BLACK, RED));
-        milli_delay(10);
+        printf("<Ticks:%x>", get_ticks());
+        milli_delay(200);
     }
 }
 
 void TestB(void)
 {
     while (1) {
-        // disp_color_str("B.", BRIGHT | MAKE_COLOR(BLACK, GREEN));
-        milli_delay(10);
+        printf("B.");
+        milli_delay(200);
     }
 }
 
 void TestC(void)
 {
     while (1) {
-        // disp_color_str("C.", BRIGHT | MAKE_COLOR(BLACK, BLUE));
-        milli_delay(10);
+        printf("C.");
+        milli_delay(200);
     }
 }

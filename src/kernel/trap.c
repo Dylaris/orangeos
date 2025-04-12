@@ -94,3 +94,10 @@ PUBLIC int sys_get_ticks(void)
 {
     return ticks;
 }
+
+PUBLIC int sys_write(char *buf, int len, PROCESS *p_proc)
+{
+    /* Need p_proc to get its control tty */
+    tty_write(&tty_table[p_proc->nr_tty], buf, len);
+    return 0;
+}

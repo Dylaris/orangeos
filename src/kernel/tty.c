@@ -117,3 +117,10 @@ PRIVATE void put_key(TTY *p_tty, u32 key)
         p_tty->inbuf_count++;
     }
 }
+
+PUBLIC void tty_write(TTY *p_tty, char *buf, int len)
+{
+    char *p = buf;
+    for (int i = 0; i < len; i++)
+        out_char(p_tty->p_console, *p++);
+}
