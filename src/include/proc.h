@@ -8,7 +8,9 @@
 #include "type.h"
 #include "asm/asm.h"
 
-#define NR_TASKS 4 /* Number of tasks */
+#define NR_TASKS 1 /* Number of tasks */
+#define NR_PROCS 3 /* Number of processes */
+
 #define STACK_SIZE_TTY   0x8000 /* stacks of task tty */
 #define STACK_SIZE_TESTA 0x8000 /* stacks of task a */
 #define STACK_SIZE_TESTB 0x8000 /* stacks of task b */

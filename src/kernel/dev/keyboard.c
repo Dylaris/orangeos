@@ -36,7 +36,6 @@ PUBLIC void init_keyboard(void)
 PUBLIC void keyboard_read(TTY *p_tty)
 {
     u8   scan_code;
-    char output[2];
     int  make;      /* TRUE: make code    FALSE: break code */
     u32  key = 0;   /* Key macro defined in keyboard.h */
     u32  *keyrow;   /* Row at keymap */

@@ -12,8 +12,7 @@ PRIVATE u32 seg2phys(u16 seg);
 
 PUBLIC void init(void)
 {
-    disp_str("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n"
-         "-----\"cstart\" begins-----\n");
+    disp_str("\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n-----\"cstart\" begins-----\n");
 
     /* GDT */
     u16 *p_gdt_limit = (u16 *) (&gdt_ptr[0]);
@@ -31,7 +30,7 @@ PUBLIC void init(void)
     */ 
     /* Initialize TSS descriptor in GDT */
     memset(&tss, 0, sizeof(tss));
-    tss.ss0 = SELECTOR_KERNEL_DS; /* Important for interrupt handling */
+    tss.ss0 = SELECTOR_KERNEL_DS;
     init_descriptor(&gdt[INDEX_TSS], 
         va2pa(seg2phys(SELECTOR_KERNEL_DS), &tss),
         sizeof(tss) - 1, DA_386TSS);
@@ -40,7 +39,7 @@ PUBLIC void init(void)
     /* Initialize LDT descriptor in GDT */
     PROCESS *p_proc = proc_table;
     u16 selector_ldt = SELECTOR_LDT_FIRST;
-    for (int i = 0; i < NR_TASKS; i++) {
+    for (int i = 0; i < NR_TASKS + NR_PROCS; i++) {
         init_descriptor(&gdt[selector_ldt >> 3], 
             va2pa(seg2phys(SELECTOR_KERNEL_DS), proc_table[i].ldts),
             LDT_SIZE * sizeof(DESCRIPTOR) - 1, DA_LDT);
@@ -48,7 +47,7 @@ PUBLIC void init(void)
         selector_ldt += 1 << 3;
     }
 
-    disp_str("-----\"cstart\" ends-----\n");
+    disp_str("-----\"cstart\" finished-----\n");
 }
 
 /* Exception handler defined in kernel.asm */

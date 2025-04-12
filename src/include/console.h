@@ -8,4 +8,10 @@ typedef struct s_console {
     unsigned int cursor;                /* Current cursor position in screen */
 } CONSOLE;
 
+#define SCR_UP  1   /* Scroll forward */
+#define SCR_DN -1   /* Scroll backward */ 
+
+#define SCREEN_SIZE  (80 * 25)
+#define SCREEN_WIDTH 80
+
 #endif /* _ORANGES_CONSOLE_H_ */
