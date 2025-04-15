@@ -22,10 +22,10 @@ LDFLAGS  	= -m elf_i386 -s -Ttext $(ENTRYPOINT)
 DASMFLAGS 	= -u -o $(ENTRYPOINT) -e $(ENTRYOFFSET)
 
 # This Program
-INC_FILE  		= include/type.h include/const.h include/proc.h include/proto.h \
-				  include/symbol.h include/syscall.h include/asm/asm.h include/asm/pic.h \
-				  include/asm/pit.h include/keyboard.h include/tty.h include/asm/vga.h \
-				  include/console.h include/asm/kb.h
+INC_FILE  		= include/type.h include/string.h \
+				  include/sys/const.h include/sys/proc.h include/sys/proto.h include/sys/symbol.h \
+				  include/sys/keyboard.h include/sys/tty.h include/sys/console.h \
+				  include/asm/asm.h include/asm/pic.h include/asm/pit.h include/asm/vga.h include/asm/kb.h
 ORANGESBOOT 	= boot/boot.bin boot/loader.bin
 ORANGESKERNEL 	= kernel.bin
 OBJS			= kernel/kernel.o kernel/syscall.o kernel/init.o kernel/main.o \

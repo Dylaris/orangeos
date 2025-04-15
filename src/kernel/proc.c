@@ -1,6 +1,6 @@
-#include "const.h"
-#include "symbol.h"
-#include "proc.h"
+#include "sys/const.h"
+#include "sys/symbol.h"
+#include "sys/proc.h"
 
 PUBLIC void schedule(void)
 {

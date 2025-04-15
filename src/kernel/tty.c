@@ -1,8 +1,8 @@
-#include "const.h"
-#include "tty.h"
-#include "proto.h"
-#include "symbol.h"
 #include "asm/vga.h"
+#include "sys/const.h"
+#include "sys/tty.h"
+#include "sys/proto.h"
+#include "sys/symbol.h"
 
 #define TTY_FIRST   (tty_table)
 #define TTY_END     (tty_table + NR_CONSOLES) 
@@ -123,4 +123,11 @@ PUBLIC void tty_write(TTY *p_tty, char *buf, int len)
     char *p = buf;
     for (int i = 0; i < len; i++)
         out_char(p_tty->p_console, *p++);
+}
+
+PUBLIC int sys_write(char *buf, int len, PROCESS *p_proc)
+{
+    /* Need p_proc to get its control tty */
+    tty_write(&tty_table[p_proc->nr_tty], buf, len);
+    return 0;
 }

@@ -1,11 +1,11 @@
 #define SYMBOL_HERE
 
 #include "asm/pic.h"
-#include "const.h"
-#include "console.h"
-#include "tty.h"
-#include "proto.h"
-#include "symbol.h"
+#include "sys/const.h"
+#include "sys/console.h"
+#include "sys/tty.h"
+#include "sys/proto.h"
+#include "sys/symbol.h"
 
 PUBLIC PROCESS proc_table[NR_TASKS + NR_PROCS];
 

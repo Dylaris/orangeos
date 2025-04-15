@@ -5,8 +5,10 @@
 #ifndef _ORANGES_PROC_H_
 #define _ORANGES_PROC_H_
 
-#include "type.h"
 #include "asm/asm.h"
+#include "type.h"
+
+#define NR_SYS_CALL 2
 
 #define NR_TASKS 1 /* Number of tasks */
 #define NR_PROCS 3 /* Number of processes */

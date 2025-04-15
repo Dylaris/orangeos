@@ -1,7 +1,8 @@
-#include "const.h"
-#include "proc.h"
-#include "proto.h"
-#include "symbol.h"
+#include "sys/const.h"
+#include "sys/proc.h"
+#include "sys/proto.h"
+#include "sys/symbol.h"
+#include "type.h"
 
 PUBLIC int kernel_main(void)
 {

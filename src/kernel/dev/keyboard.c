@@ -1,8 +1,12 @@
-#include "const.h"
-#include "type.h"
-#include "symbol.h"
+#include "asm/kb.h"
 #include "asm/pic.h"
-#include "proto.h"
+#include "sys/const.h"
+#include "sys/symbol.h"
+#include "sys/proto.h"
+#include "sys/keyboard.h"
+#include "type.h"
+
+PRIVATE KB_INPUT kb_in; 
 
 PRIVATE int code_with_E0;
 PRIVATE int shift_l;        /* Left shift state */ 
@@ -124,4 +128,16 @@ PRIVATE u8 get_byte_from_kbuf(void)
     enable_int();
 
     return scan_code;
+}
+
+PUBLIC void keyboard_handler(int irq)
+{
+    u8 scan_code = in_byte(KB_DATA);
+    if (kb_in.count < KB_IN_BYTES) {
+        *(kb_in.p_head) = scan_code;
+        kb_in.p_head++;
+        if (kb_in.p_head == kb_in.buf + KB_IN_BYTES)
+            kb_in.p_head = kb_in.buf;
+        kb_in.count++;
+    }
 }

@@ -1,6 +1,7 @@
-#include "const.h"
+#include "sys/const.h"
+#include "sys/proto.h"
 #include "type.h"
-#include "proto.h"
+#include "string.h"
 
 PUBLIC int printf(const char *fmt, ...)
 {

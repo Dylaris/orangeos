@@ -1,6 +1,5 @@
-#include "const.h"
-#include "proto.h"
-#include "asm/pit.h"
+#include "sys/const.h"
+#include "sys/proto.h"
 
 PUBLIC char *itoa(char *buf, int num) 
 {
@@ -33,10 +32,4 @@ PUBLIC void disp_int(int input)
     char output[16];
     itoa(output, input);
     disp_str(output);
-}
-
-PUBLIC void milli_delay(int milli_sec)
-{
-    int t = get_ticks();
-    while (((get_ticks() - t) * 1000 / HZ) < milli_sec) {}
 }

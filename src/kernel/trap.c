@@ -1,7 +1,6 @@
-#include "const.h"
-#include "symbol.h"
-#include "proto.h"
-#include "asm/kb.h"
+#include "sys/const.h"
+#include "sys/symbol.h"
+#include "sys/proto.h"
 
 /*=========================================================*
                         EXCEPTION
@@ -63,29 +62,6 @@ PUBLIC void spurious_irq(int irq)   /* Default handler */
     disp_str("\n");
 }
 
-PUBLIC void keyboard_handler(int irq)
-{
-    u8 scan_code = in_byte(KB_DATA);
-    if (kb_in.count < KB_IN_BYTES) {
-        *(kb_in.p_head) = scan_code;
-        kb_in.p_head++;
-        if (kb_in.p_head == kb_in.buf + KB_IN_BYTES)
-            kb_in.p_head = kb_in.buf;
-        kb_in.count++;
-    }
-}
-
-PUBLIC void clock_handler(int irq)
-{
-    ticks++;
-    p_proc_ready->ticks--;
-
-    if (k_reenter != 0) return;
-    if (p_proc_ready->ticks > 0) return;
-
-    schedule();
-}
-
 /*=========================================================*
           SYSTEM CALL (registry in sys_call_table)
                [[ Used in kernel space ]]
@@ -93,11 +69,4 @@ PUBLIC void clock_handler(int irq)
 PUBLIC int sys_get_ticks(void)
 {
     return ticks;
-}
-
-PUBLIC int sys_write(char *buf, int len, PROCESS *p_proc)
-{
-    /* Need p_proc to get its control tty */
-    tty_write(&tty_table[p_proc->nr_tty], buf, len);
-    return 0;
 }

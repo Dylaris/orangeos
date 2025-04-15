@@ -5,11 +5,10 @@
 #ifndef _ORANGES_SYMBOL_H_
 #define _ORANGES_SYMBOL_H_
 
-#include "proc.h"
-#include "syscall.h"
-#include "keyboard.h"
-#include "tty.h"
-#include "console.h"
+#include "sys/proc.h"
+#include "sys/keyboard.h"
+#include "sys/tty.h"
+#include "sys/console.h"
 
 #ifdef SYMBOL_HERE
 #undef  EXTERN
@@ -18,7 +17,6 @@
 
 EXTERN int          disp_pos;   /* Display position in screen */
 EXTERN int          ticks;      /* Clock ticks */
-EXTERN KB_INPUT     kb_in; 
 
 EXTERN char         task_stack[STACK_SIZE_TOTAL];   /* The total stack space for all tasks */
 EXTERN TSS          tss;            /* Store the information of running process (ldt and esp0) */

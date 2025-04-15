@@ -1,7 +1,7 @@
-#include "type.h"
-#include "const.h"
-#include "proto.h"
 #include "asm/pit.h"
+#include "sys/const.h"
+#include "sys/proto.h"
+#include "type.h"
 
 PUBLIC void init_pit(void)
 {

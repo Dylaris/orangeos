@@ -1,8 +1,8 @@
-#include "const.h"
-#include "proto.h"
-#include "console.h"
-#include "symbol.h"
 #include "asm/vga.h"
+#include "sys/const.h"
+#include "sys/proto.h"
+#include "sys/console.h"
+#include "sys/symbol.h"
 
 PRIVATE void set_cursor(unsigned int position);
 PRIVATE void set_video_start_addr(u32 addr);
