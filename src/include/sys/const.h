@@ -29,4 +29,21 @@
 
 #define MAKE_COLOR(b, f) ((b<<4) | f) /* MAKE_COLOR(Background, Foreground) */
 
+#define NR_SYS_CALL 2   /* Number of system call */
+#define NR_TASKS    1   /* Number of tasks */
+#define NR_PROCS    3   /* Number of processes */
+
+/* Magic chars used by `printx' */
+#define MAG_CH_PANIC    '\002'
+#define MAG_CH_ASSERT   '\003'
+
+#define ASSERT
+#ifdef ASSERT
+PUBLIC void assertion_failure(char *exp, char *file, char *base_file, int line);
+#define assert(exp) if (exp) ; \
+                    else assertion_failure(#exp, __FILE__, __BASE_FILE__, __LINE__);
+#else
+#define assert(exp)
+#endif /* ASSERT */
+
 #endif /* _ORANGES_CONST_H_ */

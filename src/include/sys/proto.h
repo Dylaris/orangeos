@@ -39,12 +39,15 @@ PUBLIC void restart(void);      /* Restore context and then restart execution */
 
 /* kernel/main.c */
 PUBLIC int kernel_main(void);
+PUBLIC void panic(const char *fmt, ...);
 PUBLIC void TestA(void);
 PUBLIC void TestB(void);
 PUBLIC void TestC(void);
 
 /* kernel/proc.c */
 PUBLIC void schedule(void);
+PUBLIC void *va2la(int pid, void *va);
+PUBLIC int ldt_seg_linear(PROCESS *p_proc, int idx);
 
 /* kernel/tty.c */
 PUBLIC void task_tty(void);
@@ -64,11 +67,15 @@ PUBLIC void spurious_irq(int irq);
 
 /* kernel/printf.c */
 PUBLIC int printf(const char *fmt, ...);
+#define printl printf
 PUBLIC int vsprintf(char *buf, const char *fmt, va_list args);
 
 /* lib/klib.c */
 PUBLIC char *itoa(char *buf, int num);
 PUBLIC void disp_int(int input);
+
+/* lib/misc.c */
+PUBLIC void spin(char *func_name);
 
 /* lib/kliba.asm */
 PUBLIC void out_byte(u16 port, u8 value);
@@ -84,11 +91,11 @@ PUBLIC void enable_int(void);
 PUBLIC void sys_call(void);
 
 /* System call - user space */
-PUBLIC int get_ticks(void);
-PUBLIC void write(char *buf, int len);
+PUBLIC int printx(char *str);
+PUBLIC int sendrec(int function, int send_recv, MESSAGE *p_msg);
 
 /* System call - kernel space */
-PUBLIC int sys_get_ticks(void);
-PUBLIC int sys_write(char *buf, int len, PROCESS *p_proc);
+PUBLIC int sys_printx(int _unused1, int _unused2, char *str, PROCESS *p_proc);
+PUBLIC int sys_sendrec(int function, int send_recv, MESSAGE *p_msg, PROCESS *p_proc);
 
 #endif /* _ORANGES_PROTO_H_ */

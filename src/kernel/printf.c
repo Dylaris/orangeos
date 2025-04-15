@@ -8,10 +8,11 @@ PUBLIC int printf(const char *fmt, ...)
     char buf[256];
 
     va_list arg = (va_list) ((char *) &fmt + 4);
-    int size = vsprintf(buf, fmt, arg);
-    write(buf, size);
+    int len = vsprintf(buf, fmt, arg);
+    buf[len] = '\0';
+    printx(buf);
 
-    return size;
+    return len;
 }
 
 PUBLIC int vsprintf(char *buf, const char *fmt, va_list args)

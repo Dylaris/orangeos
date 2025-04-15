@@ -63,9 +63,9 @@ PUBLIC int kernel_main(void)
     }
 
     proc_table[0].ticks = proc_table[0].priority = 15; /* Necessary for IO responsing */
-    proc_table[1].ticks = proc_table[1].priority = 5;
-    proc_table[2].ticks = proc_table[2].priority = 5;
-    proc_table[3].ticks = proc_table[3].priority = 5;
+    proc_table[1].ticks = proc_table[1].priority = 0;
+    proc_table[2].ticks = proc_table[2].priority = 0;
+    proc_table[3].ticks = proc_table[3].priority = 0;
 
     proc_table[1].nr_tty = 0;
     proc_table[2].nr_tty = 1;
@@ -85,10 +85,28 @@ PUBLIC int kernel_main(void)
     while (1) {}
 }
 
+/**
+ * @brief Stop the system when some seriously bad things happen
+ * @param fmt Format of rint message
+ * @return 
+ */
+PUBLIC void panic(const char *fmt, ...)
+{
+    va_list arg = (va_list) ((char *) &fmt + 4);
+    char buf[256];
+    int len = vsprintf(buf, fmt, arg);
+    buf[len] = '\0';
+    printl("%c !!panic!! %s", MAG_CH_PANIC, buf);
+
+    /* Should neveer arrive here */
+    __asm__ __volatile__ ("ud2");
+}
+
 void TestA(void)
 {
     while (1) {
-        printf("<Ticks:%x>", get_ticks());
+        // printf("<Ticks:%x>", get_ticks());
+        printf("A.");
         milli_delay(200);
     }
 }

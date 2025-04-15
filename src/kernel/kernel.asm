@@ -272,9 +272,16 @@ save:
         push es
         push fs
         push gs
+
+        ; Do not use stack until 'move esp, stack_top', or it will destroy PCB
+        mov esi, edx    ; Use ESI to store EDX (save one parameter)
+
         mov dx, ss
         mov ds, dx
         mov es, dx
+        mov fs, dx
+
+        mov edx, esi    ; Restore EDX
 
         mov esi, esp    ; Start address of PCB
 
@@ -313,15 +320,19 @@ restart_reenter:
     iretd
 
 sys_call:
-    call save
-    push dword [p_proc_ready]
-    sti
+    call save   ; ESI is the stard address of PCB
 
+    sti
+    push esi
+
+    push dword [p_proc_ready]
+    push edx
     push ecx
     push ebx
     call [sys_call_table + eax * 4]         ; EAX store system call vector
-    add esp, 4 * 3
+    add esp, 4 * 4
 
+    pop esi
     mov [esi + EAXREG - P_STACKBASE], eax   ; EAX store return value
     cli
 

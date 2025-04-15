@@ -1,6 +1,8 @@
 #ifndef _ORANGES_CONSOLE_H_
 #define _ORANGES_CONSOLE_H_
 
+#include "sys/const.h"
+
 typedef struct s_console {
     unsigned int current_start_addr;    /* Current video memory address */
     unsigned int original_addr;         /* The start of video memory with current console */
@@ -14,6 +16,8 @@ typedef struct s_console {
 #define SCREEN_SIZE  (80 * 25)
 #define SCREEN_WIDTH 80
 
-#define DEFAULT_CHAR_COLOR 0x07
+#define DEFAULT_CHAR_COLOR  (MAKE_COLOR(BLACK, WHITE))
+#define GRAY_CHAR           (MAKE_COLOR(BLACK, BLACK) | BRIGHT)
+#define RED_CHAR            (MAKE_COLOR(BLUE, RED) | BRIGHT)
 
 #endif /* _ORANGES_CONSOLE_H_ */
