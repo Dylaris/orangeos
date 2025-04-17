@@ -1,10 +1,10 @@
 #ifndef _ORANGES_TTY_H_
 #define _ORANGES_TTY_H_
 
+#include "sys/const.h"
 #include "type.h"
 
 #define TTY_IN_BYTES 256
-#define NR_CONSOLES  3
 
 struct s_console;
 

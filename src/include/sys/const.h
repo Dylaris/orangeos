@@ -12,6 +12,8 @@
 #define TRUE    1
 #define FALSE   0
 
+#define NULL ((void *) 0)
+
 /*
  * Color
  *
@@ -30,8 +32,9 @@
 #define MAKE_COLOR(b, f) ((b<<4) | f) /* MAKE_COLOR(Background, Foreground) */
 
 #define NR_SYS_CALL 2   /* Number of system call */
-#define NR_TASKS    1   /* Number of tasks */
+#define NR_TASKS    2   /* Number of tasks */
 #define NR_PROCS    3   /* Number of processes */
+#define NR_CONSOLES 3   /* Number of consoles */
 
 /* Magic chars used by `printx' */
 #define MAG_CH_PANIC    '\002'
@@ -45,5 +48,7 @@ PUBLIC void assertion_failure(char *exp, char *file, char *base_file, int line);
 #else
 #define assert(exp)
 #endif /* ASSERT */
+
+#define STR_DEFAULT_LEN 1024
 
 #endif /* _ORANGES_CONST_H_ */

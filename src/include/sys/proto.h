@@ -40,6 +40,7 @@ PUBLIC void restart(void);      /* Restore context and then restart execution */
 /* kernel/main.c */
 PUBLIC int kernel_main(void);
 PUBLIC void panic(const char *fmt, ...);
+PUBLIC int get_ticks(void);
 PUBLIC void TestA(void);
 PUBLIC void TestB(void);
 PUBLIC void TestC(void);
@@ -48,6 +49,8 @@ PUBLIC void TestC(void);
 PUBLIC void schedule(void);
 PUBLIC void *va2la(int pid, void *va);
 PUBLIC int ldt_seg_linear(PROCESS *p_proc, int idx);
+PUBLIC void reset_msg(MESSAGE *p_msg);
+PUBLIC int send_recv(int funciton, int src_dest, MESSAGE *p_msg);
 
 /* kernel/tty.c */
 PUBLIC void task_tty(void);
@@ -69,6 +72,10 @@ PUBLIC void spurious_irq(int irq);
 PUBLIC int printf(const char *fmt, ...);
 #define printl printf
 PUBLIC int vsprintf(char *buf, const char *fmt, va_list args);
+PUBLIC int sprintf(char *buf, const char *fmt, ...);
+
+/* kernel/syscall.c */
+PUBLIC void task_sys(void);
 
 /* lib/klib.c */
 PUBLIC char *itoa(char *buf, int num);

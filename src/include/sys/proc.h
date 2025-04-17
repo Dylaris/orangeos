@@ -19,11 +19,19 @@
 #define ANY             (NR_TASKS + NR_PROCS + 10)
 #define NO_TASK         (NR_TASKS + NR_PROCS + 20)
 
+#define FIRST_PROC  proc_table[0]
+#define LAST_PROC   proc_table[NR_TASKS + NR_PROCS - 1]
+
 #define STACK_SIZE_TTY   0x8000 /* stacks of task tty */
+#define STACK_SIZE_SYS   0x8000 /* stacks of task sys */
 #define STACK_SIZE_TESTA 0x8000 /* stacks of task a */
 #define STACK_SIZE_TESTB 0x8000 /* stacks of task b */
 #define STACK_SIZE_TESTC 0x8000 /* stacks of task c */
-#define STACK_SIZE_TOTAL (STACK_SIZE_TESTA + STACK_SIZE_TESTB + STACK_SIZE_TESTC + STACK_SIZE_TTY)
+#define STACK_SIZE_TOTAL (STACK_SIZE_TTY + \
+                          STACK_SIZE_SYS + \
+                          STACK_SIZE_TESTA + \
+                          STACK_SIZE_TESTB + \
+                          STACK_SIZE_TESTC)
 
 typedef struct s_stackframe {
     /* Pushed by kernel.asm:save() */
@@ -73,7 +81,7 @@ typedef struct s_proc {
 
     int has_int_msg;    /* It will be set one when the interrupt which process is waiting for occurs */
 
-    struct s_proc *q_sending;       /* Queue of processes sending messages to thic proc */
+    struct s_proc *q_sending;       /* Queue of processes sending messages to this proc */
     struct s_proc *next_sending;    /* Next processes in the sending queue */
 
     int nr_tty;         /* Control tty */
@@ -86,6 +94,11 @@ typedef struct s_task {
 } TASK;
 
 #define proc2pid(x) ((x) - proc_table)
+
+/* Process p_flags */
+#define RUNNING     0
+#define SENDING     (1 << 1)    /* Set when process try to send */
+#define RECEIVING   (1 << 2)    /* Set when process try to receive */
 
 /* IPC */
 #define SEND    1
