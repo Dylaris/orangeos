@@ -31,6 +31,10 @@ PUBLIC void init_keyboard(void);
 PUBLIC void keyboard_read(TTY *p_tty);
 PUBLIC void keyboard_handler(int irq);
 
+/* kernel/dev/hd.c */
+PUBLIC void task_hd(void);
+PUBLIC void hd_handler(int irq);
+
 /* kernel/init.c */
 PUBLIC void init(void);
 
@@ -51,6 +55,7 @@ PUBLIC void *va2la(int pid, void *va);
 PUBLIC int ldt_seg_linear(PROCESS *p_proc, int idx);
 PUBLIC void reset_msg(MESSAGE *p_msg);
 PUBLIC int send_recv(int funciton, int src_dest, MESSAGE *p_msg);
+PUBLIC void inform_int(int task_nr);
 
 /* kernel/tty.c */
 PUBLIC void task_tty(void);
@@ -93,6 +98,8 @@ PUBLIC void disable_irq(int irq);
 PUBLIC void enable_irq(int irq);
 PUBLIC void disable_int(void);
 PUBLIC void enable_int(void);
+PUBLIC void port_read(u16 port, void *buf, int n);
+PUBLIC void port_write(u16 port, void *buf, int n);
 
 /* System call handler */
 PUBLIC void sys_call(void);

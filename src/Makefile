@@ -24,14 +24,15 @@ DASMFLAGS 	= -u -o $(ENTRYPOINT) -e $(ENTRYOFFSET)
 # This Program
 INC_FILE  		= include/type.h include/string.h \
 				  include/sys/const.h include/sys/proc.h include/sys/proto.h include/sys/symbol.h \
-				  include/sys/keyboard.h include/sys/tty.h include/sys/console.h \
-				  include/asm/asm.h include/asm/pic.h include/asm/pit.h include/asm/vga.h include/asm/kb.h
+				  include/sys/keyboard.h include/sys/tty.h include/sys/console.h include/sys/hd.h \
+				  include/asm/asm.h include/asm/pic.h include/asm/pit.h include/asm/vga.h include/asm/kb.h \
+				  include/asm/hd.h
 ORANGESBOOT 	= boot/boot.bin boot/loader.bin
 ORANGESKERNEL 	= kernel.bin
 OBJS			= kernel/kernel.o kernel/syscall.o kernel/init.o kernel/main.o \
 				  kernel/dev/clock.o kernel/dev/keyboard.o kernel/tty.o kernel/console.o \
 				  kernel/asm/pic.o kernel/asm/pit.o kernel/symbol.o kernel/trap.o kernel/proc.o \
-				  kernel/printf.o kernel/systask.o \
+				  kernel/printf.o kernel/systask.o kernel/dev/hd.o \
 				  lib/kliba.o lib/klib.o lib/string.o lib/misc.o
 
 DASMOUTPUT 		= kernel.bin.asm
@@ -110,6 +111,9 @@ kernel/proc.o : kernel/proc.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
 kernel/dev/keyboard.o : kernel/dev/keyboard.c $(INC_FILE)
+	$(CC) $(CFLAGS) -o $@ $<
+
+kernel/dev/hd.o : kernel/dev/hd.c $(INC_FILE)
 	$(CC) $(CFLAGS) -o $@ $<
 
 kernel/tty.o : kernel/tty.c $(INC_FILE)

@@ -13,7 +13,7 @@
 #define INTERRUPT       -10
 #define TASK_TTY        0
 #define TASK_SYS        1
-#define TASK_WINCH      2 
+#define TASK_HD         2 
 #define TASK_FS         3
 #define TASK_MM         4
 #define ANY             (NR_TASKS + NR_PROCS + 10)
@@ -118,8 +118,31 @@ enum msgtype {
 
     /* SYS task */
     GET_TICKS,
+
+    /* Message type for drivers */
+    DEV_OPEN = 1001,
+    DEV_CLOSE,
+    DEV_READ,
+    DEV_WRITE,
+    DEV_IOCTL
 };
 
-#define RETVAL u.m3.m3i1
+/* Macros for messages */
+#define FD          u.m3.m3i1
+#define PATHNAME    u.m3.m3p1
+#define FLAGS       u.m3.m3i1
+#define NAME_LEN    u.m3.m3i2
+#define CNT         u.m3.m3i2
+#define REQUEST     u.m3.m3i2
+#define PROC_NR     u.m3.m3i3
+#define DEVICE      u.m3.m3i4
+#define POSITION    u.m3.m3l1
+#define BUF         u.m3.m3p2
+#define OFFSET      u.m3.m3i2
+#define WHENCE      u.m3.m3i3
+
+#define PID         u.m3.m3i2
+#define STATUS      u.m3.m3i1
+#define RETVAL      u.m3.m3i1
 
 #endif /* _ORANGES_PROC_H_ */

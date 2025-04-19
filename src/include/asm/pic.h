@@ -2,8 +2,8 @@
  * Stuff about PIC 
  */
 
-#ifndef _ORANGES_PIC_H_
-#define _ORANGES_PIC_H_
+#ifndef _ORANGES_ASM_PIC_H_
+#define _ORANGES_ASM_PIC_H_
 
 /* 8259A interrupt controller port */
 #define INT_M_CTL       0x20
@@ -49,4 +49,4 @@
 /* Interrupt vector (system call) */
 #define INT_VECTOR_SYS_CALL     0x90
 
-#endif /* _ORANGES_PIC_H_ */
+#endif /* _ORANGES_ASM_PIC_H_ */

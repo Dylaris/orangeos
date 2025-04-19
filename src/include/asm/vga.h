@@ -1,5 +1,5 @@
-#ifndef _ORANGES_VGA_H_
-#define _ORANGES_VGA_H_
+#ifndef _ORANGES_ASM_VGA_H_
+#define _ORANGES_ASM_VGA_H_
 
 #define CRTC_ADDR_REG 0x3D4     /* CRT Controller Registers - Addr Register */
 #define CRTC_DATA_REG 0x3D5     /* CRT Controller Registers - Data Register */
@@ -10,4 +10,4 @@
 #define V_MEM_BASE    0xB8000   /* Base of color video memory */
 #define V_MEM_SIZE    0x8000    /* 32K: B8000H -> BFFFFH */
 
-#endif /* _ORANGES_VGA_H_ */
+#endif /* _ORANGES_ASM_VGA_H_ */

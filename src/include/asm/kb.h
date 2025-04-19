@@ -2,8 +2,8 @@
  * Stuff about keyboard
  */
 
-#ifndef _ORANGES_KB_H_
-#define _ORANGES_KB_H_
+#ifndef _ORANGES_ASM_KB_H_
+#define _ORANGES_ASM_KB_H_
 
 /* 8042 ports */
 #define KB_DATA 0x60 /* I/O port for keyboard data \
@@ -13,4 +13,4 @@
                       * Read : Read Status Register \
                       * Write: Write Input Buffer(8042 Command) */
 
-#endif /* _ORANGES_KB_H_ */
+#endif /* _ORANGES_ASM_KB_H_ */

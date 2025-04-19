@@ -439,3 +439,33 @@ PRIVATE int msg_receive(PROCESS *current, int src, MESSAGE *p_msg)
 
     return 0;
 }
+
+/**
+ * @brief <Ring 0> Inform a process that an interrupt has occured
+ * @param task_nr The task which will be informed
+ */
+PUBLIC void inform_int(int task_nr)
+{
+    PROCESS *p_proc = proc_table + task_nr;
+
+    if ((p_proc->p_flags & RECEIVING) &&
+       ((p_proc->p_recvfrom == INTERRUPT) || (p_proc->p_recvfrom == ANY))) {
+        p_proc->p_msg->source = INTERRUPT;
+        p_proc->p_msg->type = HARD_INT;
+        p_proc->p_msg = NULL;
+        p_proc->has_int_msg = 0;
+        p_proc->p_flags &= ~RECEIVING;
+        p_proc->p_recvfrom = NO_TASK;
+
+        assert(p_proc->p_flags == RUNNING);
+        unblock(p_proc);
+
+        assert(p_proc->p_flags == RUNNING);
+        assert(p_proc->p_msg == NULL);
+        assert(p_proc->p_recvfrom == NO_TASK);
+        assert(p_proc->p_sendto == NO_TASK);
+    }
+    else {
+        p_proc->has_int_msg = 1;
+    }
+}
